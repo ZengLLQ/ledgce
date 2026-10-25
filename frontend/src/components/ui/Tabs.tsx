@@ -1,0 +1,98 @@
+import React from 'react';
+import { clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+export interface TabItem {
+  id: string;
+  label: string;
+  count?: number;
+  icon?: React.ReactNode;
+}
+
+export interface TabsProps {
+  tabs: TabItem[];
+  activeTab: string;
+  onChange: (id: string) => void;
+  className?: string;
+  variant?: 'pill' | 'underline';
+}
+
+export const Tabs: React.FC<TabsProps> = ({
+  tabs,
+  activeTab,
+  onChange,
+  className,
+  variant = 'pill',
+}) => {
+  if (variant === 'underline') {
+    return (
+      <div className={twMerge(clsx('flex items-center gap-6 border-b border-white/[0.08]', className))}>
+        {tabs.map((tab) => {
+          const isActive = tab.id === activeTab;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => onChange(tab.id)}
+              className={clsx(
+                'py-3 text-xs font-semibold uppercase tracking-wider flex items-center gap-2 border-b-2 -mb-px transition-colors',
+                isActive
+                  ? 'border-[#526CFF] text-[#F4F6FC]'
+                  : 'border-transparent text-[#9BA5BC] hover:text-[#F4F6FC] hover:border-white/20'
+              )}
+            >
+              {tab.icon && <span className="w-3.5 h-3.5">{tab.icon}</span>}
+              <span>{tab.label}</span>
+              {tab.count !== undefined && (
+                <span
+                  className={clsx(
+                    'text-[10px] px-1.5 py-0.2 rounded-full tabular-nums',
+                    isActive ? 'bg-[#526CFF]/20 text-[#7588FF]' : 'bg-white/5 text-[#9BA5BC]'
+                  )}
+                >
+                  {tab.count}
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={twMerge(
+        clsx('inline-flex items-center p-1 rounded-md bg-[#171C2C] border border-white/[0.08]', className)
+      )}
+    >
+      {tabs.map((tab) => {
+        const isActive = tab.id === activeTab;
+        return (
+          <button
+            key={tab.id}
+            onClick={() => onChange(tab.id)}
+            className={clsx(
+              'px-3 py-1.5 text-xs font-medium rounded-sm transition-all duration-150 flex items-center gap-2',
+              isActive
+                ? 'bg-[#20263A] text-[#F4F6FC] shadow-sm font-semibold'
+                : 'text-[#9BA5BC] hover:text-[#F4F6FC]'
+            )}
+          >
+            {tab.icon && <span className="w-3.5 h-3.5">{tab.icon}</span>}
+            <span>{tab.label}</span>
+            {tab.count !== undefined && (
+              <span
+                className={clsx(
+                  'text-[10px] px-1.5 py-0.2 rounded font-mono',
+                  isActive ? 'bg-[#526CFF]/25 text-[#7588FF]' : 'bg-white/5 text-[#9BA5BC]'
+                )}
+              >
+                {tab.count}
+              </span>
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+};

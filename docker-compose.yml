@@ -1,0 +1,25 @@
+# Ledgce local development services.
+# Credentials here are for a throwaway LOCAL development database only.
+# Override them via .env (see .env.example); never reuse them anywhere else.
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: ledgce-postgres
+    environment:
+      POSTGRES_USER: ${LEDGCE_PG_USER:-ledgce}
+      POSTGRES_PASSWORD: ${LEDGCE_PG_PASSWORD:-ledgce_local_dev}
+      POSTGRES_DB: ${LEDGCE_PG_DB:-ledgce}
+    ports:
+      # Bound to loopback only so the dev database is never exposed on the network.
+      - "127.0.0.1:${LEDGCE_PG_PORT:-5433}:5432"
+    volumes:
+      - ledgce-pgdata:/var/lib/postgresql/data
+    command: ["postgres", "-c", "max_connections=200", "-c", "fsync=on"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${LEDGCE_PG_USER:-ledgce} -d ${LEDGCE_PG_DB:-ledgce}"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  ledgce-pgdata:
