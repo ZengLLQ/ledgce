@@ -14,12 +14,12 @@ export const Card: React.FC<CardProps> = ({
   children,
   ...props
 }) => {
-  // Starlink #121212 card aesthetic with 16px radius and crisp hairline border
+  // Starlink glassmorphic card aesthetic with radial dark grey backdrop and crisp hairline border
   const variantStyles = {
-    primary: 'bg-[#121212] border-white/10 hover:border-white/20',
-    secondary: 'bg-[#161616] border-white/10 hover:border-white/20',
-    elevated: 'bg-[#1A1A1A] border-white/15 shadow-[0_8px_30px_rgba(0,0,0,0.8)]',
-    glass: 'bg-[#121212]/80 backdrop-blur-md border-white/10',
+    primary: 'glass-card-starlink hover:border-white/25',
+    secondary: 'bg-[#141923]/80 backdrop-blur-xl border-white/10 hover:border-white/20',
+    elevated: 'bg-[#181F2C]/90 backdrop-blur-2xl border-white/15 shadow-[0_12px_40px_rgba(0,0,0,0.85)]',
+    glass: 'glass-card-starlink',
   }[variant];
 
   return (
@@ -28,7 +28,7 @@ export const Card: React.FC<CardProps> = ({
         clsx(
           'border rounded-2xl p-6 sm:p-7 transition-all duration-300',
           variantStyles,
-          glow && 'border-white/40 shadow-[0_0_30px_rgba(255,255,255,0.1)]',
+          glow && 'border-white/40 shadow-[0_0_30px_rgba(255,255,255,0.15)]',
           className
         )
       )}
@@ -54,7 +54,7 @@ export const CardTitle: React.FC<React.HTMLAttributes<HTMLHeadingElement>> = ({
   children,
   ...props
 }) => (
-  <h3 className={twMerge(clsx('text-sm sm:text-base font-bold text-[#FAFAFA] tracking-tight uppercase font-display', className))} {...props}>
+  <h3 className={twMerge(clsx('text-base sm:text-lg font-bold text-white tracking-tight uppercase font-neodin', className))} {...props}>
     {children}
   </h3>
 );

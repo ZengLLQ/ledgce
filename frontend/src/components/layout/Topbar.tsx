@@ -60,7 +60,7 @@ export const Topbar: React.FC<TopbarProps> = ({
 
   return (
     <>
-      <header className="fixed top-0 inset-x-0 h-20 bg-black/90 backdrop-blur-md border-b border-white/[0.08] z-40 select-none transition-all">
+      <header className="fixed top-0 inset-x-0 h-20 bg-[#080A0E]/80 backdrop-blur-xl border-b border-white/[0.08] z-40 select-none transition-all">
         <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           {/* Starlink-inspired stark geometric typographic logo */}
           <div className="flex items-center gap-4 shrink-0">
@@ -72,7 +72,7 @@ export const Topbar: React.FC<TopbarProps> = ({
               className="flex items-center gap-3 text-left group focus:outline-none"
             >
               <div className="w-2.5 h-2.5 bg-white rounded-full group-hover:scale-125 transition-transform" />
-              <span className="font-display font-bold text-lg sm:text-xl tracking-[0.35em] text-white group-hover:text-white transition-colors">
+              <span className="font-neodin font-extrabold text-xl sm:text-2xl tracking-[0.3em] text-white group-hover:text-white transition-colors">
                 LEDGCE
               </span>
             </button>
@@ -82,14 +82,14 @@ export const Topbar: React.FC<TopbarProps> = ({
           </div>
 
           {/* Desktop Horizontal Navigation Links */}
-          <nav className="hidden xl:flex items-center gap-4 2xl:gap-6">
+          <nav className="hidden xl:flex items-center gap-4 2xl:gap-6 font-neodin">
             {NAV_LINKS.map((link) => {
               const isActive = currentRoute === link.id;
               return (
                 <button
                   key={link.id}
                   onClick={() => onRouteChange(link.id)}
-                  className={`text-[11px] font-mono font-bold uppercase tracking-[0.15em] transition-all py-1.5 relative whitespace-nowrap ${
+                  className={`text-[12px] font-bold uppercase tracking-[0.14em] transition-all py-1.5 relative whitespace-nowrap ${
                     isActive
                       ? 'text-white'
                       : 'text-white/60 hover:text-white'

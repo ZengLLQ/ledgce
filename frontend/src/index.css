@@ -7,10 +7,45 @@
     color-scheme: dark;
   }
 
+  /* NeoDIN font alias mapping to Barlow Semi Condensed & DIN definitions */
+  @font-face {
+    font-family: 'NeoDIN';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: local('NeoDIN'), local('D-DIN'), local('DIN 1451'), local('Barlow Semi Condensed');
+  }
+
+  @font-face {
+    font-family: 'NeoDIN';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: local('NeoDIN-Bold'), local('D-DIN-Bold'), local('DIN 1451 Bold'), local('Barlow Semi Condensed SemiBold');
+  }
+
+  @font-face {
+    font-family: 'NeoDIN';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: local('NeoDIN-Bold'), local('D-DIN-Bold'), local('DIN Next LT Pro Bold'), local('Barlow Semi Condensed Bold');
+  }
+
+  @font-face {
+    font-family: 'NeoDIN';
+    font-style: normal;
+    font-weight: 800;
+    font-display: swap;
+    src: local('NeoDIN-Black'), local('D-DIN-Black'), local('Barlow Semi Condensed ExtraBold');
+  }
+
   body {
-    background-color: #000000;
+    /* Starlink Rich Atmospheric Radial Dark Grey Background - Never Flat Black */
+    background: radial-gradient(ellipse 120% 90% at 50% -10%, #1a202c 0%, #0e1219 40%, #080a0f 80%, #040507 100%) fixed;
+    background-color: #040507;
     color: #FAFAFA;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: 'NeoDIN', 'Barlow Semi Condensed', Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     margin: 0;
     padding: 0;
@@ -29,14 +64,14 @@
     height: 5px;
   }
   ::-webkit-scrollbar-track {
-    background: #000000;
+    background: #080A0E;
   }
   ::-webkit-scrollbar-thumb {
-    background: #262626;
+    background: #252B36;
     border-radius: 2px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #404040;
+    background: #3A4354;
   }
 }
 
@@ -48,12 +83,40 @@
     border-color: rgba(255, 255, 255, 0.35);
   }
 
+  /* Starlink Sunset/Dusk Sky Cinematic Hero Gradient */
+  .bg-starlink-dusk-hero {
+    background: 
+      radial-gradient(ellipse 90% 70% at 75% 35%, rgba(65, 52, 46, 0.5) 0%, transparent 60%),
+      radial-gradient(circle at 15% 25%, rgba(40, 52, 70, 0.6) 0%, transparent 50%),
+      linear-gradient(180deg, #121824 0%, #1c181c 25%, #34241e 48%, #1c161a 70%, #080a0f 100%);
+  }
+
+  /* Starlink Radial Dark Grey Ambient Backdrop */
+  .bg-starlink-radial-grey {
+    background: radial-gradient(circle at 50% 35%, rgba(45, 55, 75, 0.22) 0%, rgba(16, 20, 28, 0.75) 60%, #07090d 100%);
+  }
+
+  /* Starlink Glassmorphic Card Surface */
+  .glass-card-starlink {
+    background: linear-gradient(180deg, rgba(28, 34, 46, 0.65) 0%, rgba(13, 16, 23, 0.8) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.85), inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+  }
+
+  /* Starlink Glass Inner Well / Input */
+  .glass-well {
+    background: rgba(10, 13, 19, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
   /* Starlink full-bleed cinematic hero background */
   .bg-starlink-hero {
     background: 
-      radial-gradient(ellipse 90% 60% at 50% -20%, rgba(120, 140, 180, 0.15), transparent 70%),
-      radial-gradient(circle at 50% 120%, rgba(20, 25, 40, 0.4), transparent 60%),
-      #000000;
+      radial-gradient(ellipse 90% 60% at 50% -20%, rgba(120, 140, 180, 0.2), transparent 70%),
+      radial-gradient(circle at 50% 120%, rgba(20, 25, 40, 0.45), transparent 60%),
+      #080A0E;
   }
 
   /* Starlink cosmic horizon curvature line */
@@ -63,10 +126,10 @@
     left: -50%;
     top: 0;
     height: 350px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 50%;
     pointer-events: none;
-    box-shadow: 0 1px 30px rgba(255, 255, 255, 0.08);
+    box-shadow: 0 1px 30px rgba(255, 255, 255, 0.1);
   }
 
   .text-starlink-glow {
