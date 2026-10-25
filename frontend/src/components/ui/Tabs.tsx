@@ -63,8 +63,11 @@ export const Tabs: React.FC<TabsProps> = ({
   return (
     <div
       className={twMerge(
-        clsx('inline-flex items-center p-1 rounded-md bg-[#141414] border border-white/10 select-none', className))
-      }
+        clsx(
+          'inline-flex items-center gap-1 p-1 rounded-lg bg-[#0D0F14] border border-white/10 select-none max-w-full overflow-x-auto no-scrollbar shrink-0',
+          className
+        )
+      )}
     >
       {tabs.map((tab) => {
         const isActive = tab.id === activeTab;
@@ -73,10 +76,10 @@ export const Tabs: React.FC<TabsProps> = ({
             key={tab.id}
             onClick={() => onChange(tab.id)}
             className={clsx(
-              'px-3.5 py-1.5 text-xs font-mono font-bold uppercase tracking-[0.1em] rounded-sm transition-all duration-150 flex items-center gap-2',
+              'px-3.5 py-1.5 text-xs font-mono font-bold uppercase tracking-[0.1em] rounded-md transition-all duration-150 flex items-center gap-2 whitespace-nowrap shrink-0',
               isActive
                 ? 'bg-white text-black shadow-sm'
-                : 'text-white/60 hover:text-white'
+                : 'text-white/60 hover:text-white hover:bg-white/5'
             )}
           >
             {tab.icon && <span className="w-3.5 h-3.5">{tab.icon}</span>}
@@ -84,7 +87,7 @@ export const Tabs: React.FC<TabsProps> = ({
             {tab.count !== undefined && (
               <span
                 className={clsx(
-                  'text-[10px] px-1.5 py-0.2 rounded font-mono',
+                  'text-[10px] px-1.5 py-0.5 rounded font-mono font-bold',
                   isActive ? 'bg-black/20 text-black' : 'bg-white/10 text-white/60'
                 )}
               >

@@ -47,8 +47,14 @@ export default {
           'Roboto',
           'sans-serif',
         ],
+        display: [
+          '"Space Grotesk"',
+          'Inter',
+          '-apple-system',
+          'sans-serif',
+        ],
         mono: [
-          'JetBrains Mono',
+          '"JetBrains Mono"',
           'ui-monospace',
           'SFMono-Regular',
           'Menlo',
@@ -60,6 +66,7 @@ export default {
       letterSpacing: {
         starlink: '0.15em',
         technical: '0.25em',
+        ultrawide: '0.35em',
       },
       borderRadius: {
         xs: "2px",

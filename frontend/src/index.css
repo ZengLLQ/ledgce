@@ -17,9 +17,10 @@
     overflow-x: hidden;
   }
 
-  /* Monospace figures for financial numbers */
+  /* Monospace figures & tabular alignment for financial numbers */
   .tabular-nums, .font-mono {
     font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1, "cv02" 1, "cv03" 1, "cv04" 1;
   }
 
   /* Starlink precision scrollbars */
@@ -74,6 +75,20 @@
 
   .badge-pulse {
     animation: starlinkBeacon 2.5s infinite ease-in-out;
+  }
+
+  /* Conceal scrollbars for sleek touch & horizontal tab scroll */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .font-display {
+    font-family: 'Space Grotesk', Inter, -apple-system, sans-serif;
+    letter-spacing: -0.02em;
   }
 }
 

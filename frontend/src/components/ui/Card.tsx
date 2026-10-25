@@ -54,7 +54,7 @@ export const CardTitle: React.FC<React.HTMLAttributes<HTMLHeadingElement>> = ({
   children,
   ...props
 }) => (
-  <h3 className={twMerge(clsx('text-base font-bold text-[#FAFAFA] tracking-tight uppercase font-mono', className))} {...props}>
+  <h3 className={twMerge(clsx('text-sm sm:text-base font-bold text-[#FAFAFA] tracking-tight uppercase font-display', className))} {...props}>
     {children}
   </h3>
 );
@@ -64,7 +64,7 @@ export const CardDescription: React.FC<React.HTMLAttributes<HTMLParagraphElement
   children,
   ...props
 }) => (
-  <p className={twMerge(clsx('text-xs text-white/50 leading-relaxed font-light', className))} {...props}>
+  <p className={twMerge(clsx('text-xs text-white/60 leading-relaxed font-normal', className))} {...props}>
     {children}
   </p>
 );
@@ -122,22 +122,31 @@ export const MetricTile: React.FC<MetricTileProps> = ({
     <div
       className={twMerge(
         clsx(
-          'p-6 rounded-2xl bg-[#121212] border border-white/10 flex flex-col justify-between hover:border-white/25 transition-all select-none',
+          'p-5 sm:p-6 rounded-2xl bg-[#121212] border border-white/10 flex flex-col justify-between hover:border-white/25 transition-all select-none min-w-0',
           className
         )
       )}
     >
       <div className="flex items-center justify-between text-xs text-white/50 mb-3">
         <span className="font-mono uppercase tracking-[0.2em] text-[10px] font-bold">{label}</span>
-        {icon && <span className="text-white/40">{icon}</span>}
+        {icon && <span className="text-white/40 shrink-0">{icon}</span>}
       </div>
 
-      <div className="flex items-baseline gap-2 my-1">
-        <span className="text-3xl sm:text-4xl font-bold font-mono text-white tabular-nums tracking-tight">
+      <div className="flex items-baseline gap-2 my-1 min-w-0 overflow-hidden">
+        <span
+          className={clsx(
+            'font-bold font-mono text-white tracking-tight truncate',
+            typeof value === 'string' && value.length > 8
+              ? 'text-lg sm:text-xl'
+              : typeof value === 'string' && value.length > 5
+              ? 'text-xl sm:text-2xl'
+              : 'text-3xl sm:text-4xl tabular-nums'
+          )}
+        >
           {value}
         </span>
         {unit && (
-          <span className="text-[11px] font-mono uppercase tracking-wider text-white/40">
+          <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-white/40 shrink-0">
             {unit}
           </span>
         )}
@@ -150,7 +159,7 @@ export const MetricTile: React.FC<MetricTileProps> = ({
               {change}
             </span>
           )}
-          {subtext && <span className="text-white/40 truncate">{subtext}</span>}
+          {subtext && <span className="text-white/40 truncate ml-2">{subtext}</span>}
         </div>
       )}
     </div>

@@ -38,8 +38,8 @@ export const Shell: React.FC<ShellProps> = ({
         onQuickReconcile={onQuickReconcile}
       />
 
-      {/* Main Content: Full-bleed for landing hero, padded container for operations */}
-      <main className={`flex-1 pt-20 ${isLanding ? 'w-full' : 'max-w-7xl mx-auto w-full px-4 sm:px-8 py-8'}`}>
+      {/* Main Content: Full-bleed for landing hero, perfectly spaced container for operations without topbar overlap */}
+      <main className={`flex-1 ${isLanding ? 'pt-20 w-full' : 'pt-24 sm:pt-28 pb-16 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8'}`}>
         {children}
       </main>
 

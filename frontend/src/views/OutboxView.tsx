@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import {
   SendHorizontal,
   RotateCw,
@@ -69,23 +70,28 @@ export const OutboxView: React.FC = () => {
   const publishedCount = events.filter((e) => e.status === 'published').length;
 
   return (
-    <div className="space-y-6">
-      {/* Top Banner explaining Transactional Outbox guarantee */}
-      <div className="p-6 rounded-2xl bg-[#121212] border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4 select-none">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white shrink-0">
+    <div className="space-y-6 select-none font-sans">
+      {/* 1. Top Banner explaining Transactional Outbox guarantee */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.25 }}
+        className="p-6 sm:p-7 rounded-2xl bg-[#0D0F14] border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-6"
+      >
+        <div className="flex items-start sm:items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white shrink-0 mt-0.5 sm:mt-0">
             <SendHorizontal className="w-6 h-6" />
           </div>
           <div>
-            <div className="flex items-center gap-2.5">
-              <span className="text-base font-bold text-white uppercase tracking-tight font-mono">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <span className="text-base sm:text-lg font-bold text-white uppercase tracking-tight font-display">
                 Transactional Outbox Pattern Active
               </span>
               <Badge variant="info" size="sm">
                 Dual-Write Mitigation
               </Badge>
             </div>
-            <p className="text-xs text-white/50 mt-1 font-light">
+            <p className="text-xs text-white/50 mt-1 font-light leading-relaxed max-w-2xl">
               Every balance movement stages an event atomically into PostgreSQL before publication.
               Lease locks prevent split-brain delivery.
             </p>
@@ -102,17 +108,22 @@ export const OutboxView: React.FC = () => {
             Refresh Queue
           </Button>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Outbox Metrics */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      {/* 2. Outbox Metrics */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.05 }}
+        className="grid grid-cols-1 sm:grid-cols-3 gap-4"
+      >
         <MetricTile
           label="Pending Queue"
           value={pendingCount}
           unit="EVENTS"
           change="Available for Worker Lease"
           changeType="neutral"
-          icon={<Clock className="w-4 h-4 text-[#F2B85C]" />}
+          icon={<Clock className="w-4 h-4 text-[#FFAA00]" />}
         />
 
         <MetricTile
@@ -121,7 +132,7 @@ export const OutboxView: React.FC = () => {
           unit="DELIVERED"
           change="Downstream ACK Received"
           changeType="positive"
-          icon={<CheckCircle2 className="w-4 h-4 text-[#35D6A0]" />}
+          icon={<CheckCircle2 className="w-4 h-4 text-[#00D26A]" />}
         />
 
         <MetricTile
@@ -130,128 +141,141 @@ export const OutboxView: React.FC = () => {
           unit="EXHAUSTED"
           change={deadCount > 0 ? 'Requires Operator Action' : 'Zero Poison Messages'}
           changeType={deadCount > 0 ? 'negative' : 'positive'}
-          icon={<AlertOctagon className="w-4 h-4 text-[#FF6B78]" />}
+          icon={<AlertOctagon className="w-4 h-4 text-[#FF453A]" />}
         />
-      </div>
+      </motion.div>
 
-      {/* Filter Tabs */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <Tabs
-          tabs={[
-            { id: 'all', label: 'All Events' },
-            { id: 'pending', label: 'Pending', count: pendingCount },
-            { id: 'published', label: 'Published' },
-            { id: 'dead', label: 'Dead Letter', count: deadCount },
-          ]}
-          activeTab={activeTab}
-          onChange={(id: string) => setActiveTab(id)}
-        />
-      </div>
+      {/* 3. Filter Tabs */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.1 }}
+        className="p-3 bg-[#0D0F14] border border-white/10 rounded-xl flex items-center justify-between"
+      >
+        <div className="overflow-x-auto no-scrollbar max-w-full">
+          <Tabs
+            tabs={[
+              { id: 'all', label: 'All Events', count: events.length },
+              { id: 'pending', label: 'Pending', count: pendingCount },
+              { id: 'published', label: 'Published', count: publishedCount },
+              { id: 'dead', label: 'Dead Letter', count: deadCount },
+            ]}
+            activeTab={activeTab}
+            onChange={(id: string) => setActiveTab(id)}
+          />
+        </div>
+      </motion.div>
 
-      {/* Outbox Events Table */}
-      <Card>
-        <CardHeader>
-          <div>
-            <CardTitle>Transactional Outbox Events</CardTitle>
-            <CardDescription>
-              Guaranteed message queue staged in the same ACID transaction as double-entry ledger postings
-            </CardDescription>
-          </div>
-          <Badge variant="neutral" size="sm">
-            SKIP LOCKED Lease Concurrency
-          </Badge>
-        </CardHeader>
+      {/* 4. Outbox Events Table */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, delay: 0.15 }}
+      >
+        <Card>
+          <CardHeader>
+            <div>
+              <CardTitle>Transactional Outbox Events</CardTitle>
+              <CardDescription>
+                Guaranteed message queue staged in the same ACID transaction as double-entry ledger postings
+              </CardDescription>
+            </div>
+            <Badge variant="neutral" size="sm">
+              SKIP LOCKED Lease Concurrency
+            </Badge>
+          </CardHeader>
 
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Seq</TableHead>
-              <TableHead>Event Type</TableHead>
-              <TableHead>Aggregate ID</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Attempts</TableHead>
-              <TableHead>Worker Lease</TableHead>
-              <TableHead>Latency</TableHead>
-              <TableHead>Created At</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {events.length > 0 ? (
-              events.map((ev) => (
-                <TableRow
-                  key={ev.id}
-                  onClick={() => {
-                    setSelectedEvent(ev);
-                    setIsDetailOpen(true);
-                  }}
-                >
-                  <TableCell className="font-mono text-[#9BA5BC]">#{ev.seq}</TableCell>
-                  <TableCell className="font-mono font-semibold text-[#F4F6FC]">
-                    {ev.event_type}
-                  </TableCell>
-                  <TableCell className="font-mono text-xs text-[#9BA5BC]">
-                    {ev.aggregate_id.slice(0, 16)}...
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={
-                        ev.status === 'published'
-                          ? 'positive'
-                          : ev.status === 'pending'
-                          ? 'warning'
-                          : ev.status === 'processing'
-                          ? 'info'
-                          : 'error'
-                      }
-                      size="sm"
-                      dot
-                    >
-                      {ev.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="font-mono tabular-nums">{ev.attempts} / 5</TableCell>
-                  <TableCell className="font-mono text-[11px] text-[#9BA5BC]">
-                    {ev.locked_by ? (
-                      <span className="flex items-center gap-1 text-[#7588FF]">
-                        <Lock className="w-3 h-3" />
-                        {ev.locked_by.slice(0, 12)}
-                      </span>
-                    ) : (
-                      '—'
-                    )}
-                  </TableCell>
-                  <TableCell className="font-mono text-xs tabular-nums text-[#9BA5BC]">
-                    {ev.age_seconds.toFixed(2)}s
-                  </TableCell>
-                  <TableCell className="font-mono text-[11px] text-[#9BA5BC]">
-                    {new Date(ev.created_at).toLocaleTimeString()}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {(ev.status === 'dead' || ev.status === 'failed') && (
-                      <Button
-                        size="xs"
-                        variant="secondary"
-                        loading={retryingId === ev.id}
-                        onClick={(e: React.MouseEvent) => handleRetry(e, ev.id)}
-                        icon={<RotateCw className="w-3 h-3 text-[#526CFF]" />}
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="whitespace-nowrap">Seq</TableHead>
+                <TableHead className="whitespace-nowrap">Event Type</TableHead>
+                <TableHead className="whitespace-nowrap">Aggregate ID</TableHead>
+                <TableHead className="whitespace-nowrap">Status</TableHead>
+                <TableHead className="whitespace-nowrap">Attempts</TableHead>
+                <TableHead className="whitespace-nowrap">Worker Lease</TableHead>
+                <TableHead className="whitespace-nowrap">Latency</TableHead>
+                <TableHead className="whitespace-nowrap">Created At</TableHead>
+                <TableHead className="text-right whitespace-nowrap">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {events.length > 0 ? (
+                events.map((ev) => (
+                  <TableRow
+                    key={ev.id}
+                    onClick={() => {
+                      setSelectedEvent(ev);
+                      setIsDetailOpen(true);
+                    }}
+                  >
+                    <TableCell className="font-mono text-white/50 font-bold whitespace-nowrap">#{ev.seq}</TableCell>
+                    <TableCell className="font-mono font-bold text-white whitespace-nowrap">
+                      {ev.event_type}
+                    </TableCell>
+                    <TableCell className="font-mono text-xs text-white/50 whitespace-nowrap">
+                      {ev.aggregate_id.slice(0, 16)}...
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap">
+                      <Badge
+                        variant={
+                          ev.status === 'published'
+                            ? 'positive'
+                            : ev.status === 'pending'
+                            ? 'warning'
+                            : ev.status === 'processing'
+                            ? 'info'
+                            : 'error'
+                        }
+                        size="sm"
+                        dot
                       >
-                        Retry
-                      </Button>
-                    )}
+                        {ev.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="font-mono tabular-nums text-white whitespace-nowrap">{ev.attempts} / 5</TableCell>
+                    <TableCell className="font-mono text-[11px] text-white/60 whitespace-nowrap">
+                      {ev.locked_by ? (
+                        <span className="flex items-center gap-1 text-white">
+                          <Lock className="w-3 h-3 text-white/50" />
+                          {ev.locked_by.slice(0, 12)}
+                        </span>
+                      ) : (
+                        '—'
+                      )}
+                    </TableCell>
+                    <TableCell className="font-mono text-xs tabular-nums text-white/60 whitespace-nowrap">
+                      {ev.age_seconds.toFixed(2)}s
+                    </TableCell>
+                    <TableCell className="font-mono text-[11px] text-white/50 whitespace-nowrap">
+                      {new Date(ev.created_at).toLocaleTimeString()}
+                    </TableCell>
+                    <TableCell className="text-right whitespace-nowrap">
+                      {(ev.status === 'dead' || ev.status === 'failed') && (
+                        <Button
+                          size="xs"
+                          variant="secondary"
+                          loading={retryingId === ev.id}
+                          onClick={(e: React.MouseEvent) => handleRetry(e, ev.id)}
+                          icon={<RotateCw className="w-3 h-3" />}
+                        >
+                          Retry
+                        </Button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={9} className="text-center py-12 text-white/50 font-mono">
+                    No outbox events matching the selected status.
                   </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={9} className="text-center py-12 text-[#9BA5BC]">
-                  No outbox events matching the selected status.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </Card>
+              )}
+            </TableBody>
+          </Table>
+        </Card>
+      </motion.div>
 
       {/* Outbox Event Inspector Modal */}
       <Modal
@@ -261,24 +285,24 @@ export const OutboxView: React.FC = () => {
         description="Detailed delivery and lease tracking for downstream subscriber propagation."
       >
         {selectedEvent ? (
-          <div className="space-y-4 text-xs">
-            <div className="p-3.5 rounded bg-[#171C2C] border border-white/[0.08] space-y-2">
+          <div className="space-y-4 text-xs select-none font-sans">
+            <div className="p-4 rounded-xl bg-[#16181F] border border-white/[0.08] space-y-2.5">
               <div className="flex items-center justify-between">
-                <span className="text-[#9BA5BC]">Event Sequence:</span>
-                <span className="font-mono font-bold text-[#F4F6FC]">#{selectedEvent.seq}</span>
+                <span className="text-white/50 font-mono">Event Sequence:</span>
+                <span className="font-mono font-bold text-white">#{selectedEvent.seq}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-[#9BA5BC]">Event Type:</span>
-                <span className="font-mono font-bold text-[#526CFF]">
+                <span className="text-white/50 font-mono">Event Type:</span>
+                <span className="font-mono font-bold text-white">
                   {selectedEvent.event_type}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-[#9BA5BC]">Aggregate Target ID:</span>
-                <span className="font-mono text-[#F4F6FC]">{selectedEvent.aggregate_id}</span>
+                <span className="text-white/50 font-mono">Aggregate Target ID:</span>
+                <span className="font-mono text-white/90">{selectedEvent.aggregate_id}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-[#9BA5BC]">Current Status:</span>
+                <span className="text-white/50 font-mono">Current Status:</span>
                 <Badge
                   variant={selectedEvent.status === 'published' ? 'positive' : 'warning'}
                   size="sm"
@@ -289,9 +313,9 @@ export const OutboxView: React.FC = () => {
             </div>
 
             {selectedEvent.last_error && (
-              <div className="p-3 rounded bg-[#FF6B78]/10 border border-[#FF6B78]/30">
-                <span className="font-bold text-[#FF6B78] block mb-1">Last Delivery Error:</span>
-                <p className="font-mono text-[11px] text-[#F4F6FC]">{selectedEvent.last_error}</p>
+              <div className="p-3.5 rounded-xl bg-[#FF453A]/10 border border-[#FF453A]/30">
+                <span className="font-bold text-[#FF453A] block mb-1 font-mono">Last Delivery Error:</span>
+                <p className="font-mono text-[11px] text-white/90">{selectedEvent.last_error}</p>
               </div>
             )}
 

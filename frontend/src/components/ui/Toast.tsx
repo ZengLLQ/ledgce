@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { CheckCircle2, AlertTriangle, AlertCircle, Info, X } from 'lucide-react';
 import { clsx } from 'clsx';
 
@@ -37,46 +38,53 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none max-w-sm w-full">
-        {toasts.map((toast) => {
-          const icon = {
-            success: <CheckCircle2 className="w-4 h-4 text-[#35D6A0] shrink-0" />,
-            warning: <AlertTriangle className="w-4 h-4 text-[#F2B85C] shrink-0" />,
-            error: <AlertCircle className="w-4 h-4 text-[#FF6B78] shrink-0" />,
-            info: <Info className="w-4 h-4 text-[#526CFF] shrink-0" />,
-          }[toast.type];
+      <div className="fixed bottom-5 right-5 z-[80] flex flex-col gap-2.5 pointer-events-none max-w-sm w-full select-none">
+        <AnimatePresence>
+          {toasts.map((toast) => {
+            const icon = {
+              success: <CheckCircle2 className="w-4 h-4 text-[#00D26A] shrink-0" />,
+              warning: <AlertTriangle className="w-4 h-4 text-[#FFAA00] shrink-0" />,
+              error: <AlertCircle className="w-4 h-4 text-[#FF453A] shrink-0" />,
+              info: <Info className="w-4 h-4 text-white shrink-0" />,
+            }[toast.type];
 
-          const borderColor = {
-            success: 'border-[#35D6A0]/30',
-            warning: 'border-[#F2B85C]/30',
-            error: 'border-[#FF6B78]/30',
-            info: 'border-[#526CFF]/30',
-          }[toast.type];
+            const borderColor = {
+              success: 'border-[#00D26A]/30',
+              warning: 'border-[#FFAA00]/30',
+              error: 'border-[#FF453A]/30',
+              info: 'border-white/20',
+            }[toast.type];
 
-          return (
-            <div
-              key={toast.id}
-              className={clsx(
-                'pointer-events-auto flex items-start gap-3 p-3.5 rounded-lg bg-[#111522] border shadow-elevated transition-all duration-200 animate-in slide-in-from-right-4',
-                borderColor
-              )}
-            >
-              <div className="mt-0.5">{icon}</div>
-              <div className="flex-1 text-xs">
-                <p className="font-semibold text-[#F4F6FC]">{toast.title}</p>
-                {toast.description && (
-                  <p className="text-[#9BA5BC] mt-0.5 leading-relaxed">{toast.description}</p>
+            return (
+              <motion.div
+                key={toast.id}
+                initial={{ opacity: 0, y: 16, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 12, scale: 0.95 }}
+                transition={{ type: 'spring', damping: 25, stiffness: 350 }}
+                className={clsx(
+                  'pointer-events-auto flex items-start gap-3 p-4 rounded-xl bg-[#0D0F14]/95 backdrop-blur-md border shadow-[0_12px_30px_rgba(0,0,0,0.8)] transition-all',
+                  borderColor
                 )}
-              </div>
-              <button
-                onClick={() => removeToast(toast.id)}
-                className="text-[#9BA5BC] hover:text-[#F4F6FC] p-0.5 rounded transition-colors"
               >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          );
-        })}
+                <div className="mt-0.5">{icon}</div>
+                <div className="flex-1 text-xs">
+                  <p className="font-mono font-bold uppercase tracking-wider text-white text-[11px]">{toast.title}</p>
+                  {toast.description && (
+                    <p className="text-white/60 mt-1 leading-relaxed text-[11px] font-light">{toast.description}</p>
+                  )}
+                </div>
+                <button
+                  onClick={() => removeToast(toast.id)}
+                  className="text-white/40 hover:text-white p-0.5 rounded transition-colors"
+                  aria-label="Dismiss toast"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
       </div>
     </ToastContext.Provider>
   );

@@ -37,16 +37,18 @@ export const StatusPill: React.FC<StatusPillProps> = ({
         />
       </span>
 
-      <span className="flex items-center gap-1.5 text-[10px]">
+      <span className="flex items-center gap-1.5 text-[10px] whitespace-nowrap">
         {isBalanced ? (
           <>
-            <ShieldCheck className="w-3 h-3" />
-            <span>INVARIANTS VERIFIED · Σ=0</span>
+            <ShieldCheck className="w-3 h-3 shrink-0" />
+            <span>
+              <span className="hidden xl:inline">INVARIANTS VERIFIED · </span>Σ = 0.00
+            </span>
           </>
         ) : (
           <>
-            <ShieldAlert className="w-3 h-3" />
-            <span>LEDGER VARIANCE DETECTED</span>
+            <ShieldAlert className="w-3 h-3 shrink-0" />
+            <span>VARIANCE DETECTED</span>
           </>
         )}
       </span>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import {
   Plus,
   Search,
@@ -8,6 +9,8 @@ import {
   Eye,
   RefreshCw,
   Coins,
+  Wallet,
+  X,
 } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
@@ -56,11 +59,12 @@ export const AccountsView: React.FC<AccountsViewProps> = ({ onInitiateTransferFr
   const [submitting, setSubmitting] = useState(false);
   const { showToast } = useToast();
 
-  const loadAccounts = async () => {
+  const loadAccounts = async (query?: string) => {
     try {
       setLoading(true);
+      const activeSearch = query !== undefined ? query : search;
       const res = await api.listAccounts({
-        search: search || undefined,
+        search: activeSearch || undefined,
         kind: activeTab === 'all' ? undefined : activeTab,
         currency: currencyFilter === 'all' ? undefined : currencyFilter,
       });
@@ -157,44 +161,27 @@ export const AccountsView: React.FC<AccountsViewProps> = ({ onInitiateTransferFr
   };
 
   return (
-    <div className="space-y-6">
-      {/* Top Filter and Actions Toolbar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-3">
-          <Tabs
-            tabs={[
-              { id: 'all', label: 'All Accounts' },
-              { id: 'customer', label: 'Customer' },
-              { id: 'system', label: 'System Clearing' },
-            ]}
-            activeTab={activeTab}
-            onChange={(id: string) => setActiveTab(id as 'all' | 'customer' | 'system')}
-          />
-
-          <select
-            value={currencyFilter}
-            onChange={(e) => setCurrencyFilter(e.target.value)}
-            className="h-10 px-3.5 text-xs rounded font-mono uppercase bg-[#141414] border border-white/15 text-white focus:outline-none focus:border-white transition-all"
-          >
-            <option value="all">ALL CURRENCIES</option>
-            <option value="USD">USD</option>
-            <option value="EUR">EUR</option>
-            <option value="IDR">IDR</option>
-          </select>
+    <div className="space-y-6 select-none">
+      {/* 1. Header Toolbar with Title and Primary Actions */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.25 }}
+        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+      >
+        <div>
+          <div className="flex items-center gap-2">
+            <Wallet className="w-5 h-5 text-white" />
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white uppercase font-display">
+              Accounts & Vaults
+            </h1>
+          </div>
+          <p className="text-xs text-white/50 mt-1 font-light">
+            Real-time balance projection cache kept strictly invariant-synchronized with ledger journals.
+          </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <form onSubmit={handleSearchSubmit} className="relative">
-            <Search className="w-3.5 h-3.5 text-white/40 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-            <input
-              type="text"
-              placeholder="SEARCH CODE / NAME..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="h-10 pl-9 pr-3 text-xs rounded bg-[#141414] border border-white/15 text-white placeholder:text-white/30 focus:outline-none focus:border-white transition-all w-48 sm:w-64 font-mono uppercase"
-            />
-          </form>
-
+        <div className="flex flex-wrap items-center gap-2.5 shrink-0">
           <Button
             size="md"
             variant="outline"
@@ -213,114 +200,181 @@ export const AccountsView: React.FC<AccountsViewProps> = ({ onInitiateTransferFr
             Create Account
           </Button>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Accounts List Table */}
-      <Card>
-        <CardHeader>
-          <div>
-            <CardTitle>Accounts & Balances</CardTitle>
-            <CardDescription>
-              Real-time projection table kept strictly consistent with double-entry journal entries
-            </CardDescription>
-          </div>
-          <Button
-            size="xs"
-            variant="ghost"
-            onClick={loadAccounts}
-            icon={<RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />}
+      {/* 2. Structured Filter and Search Bar to eliminate collisions */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.05 }}
+        className="p-3 bg-[#0D0F14] border border-white/10 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-3"
+      >
+        <div className="flex flex-wrap items-center gap-2.5">
+          <Tabs
+            tabs={[
+              { id: 'all', label: 'All Accounts' },
+              { id: 'customer', label: 'Customer' },
+              { id: 'system', label: 'System Clearing' },
+            ]}
+            activeTab={activeTab}
+            onChange={(id: string) => setActiveTab(id as 'all' | 'customer' | 'system')}
+          />
+
+          <select
+            value={currencyFilter}
+            onChange={(e) => setCurrencyFilter(e.target.value)}
+            className="h-9 px-3 text-xs rounded-lg font-mono uppercase bg-[#16181F] border border-white/15 text-white focus:outline-none focus:border-white transition-all shrink-0"
           >
-            Refresh
-          </Button>
-        </CardHeader>
+            <option value="all">ALL CURRENCIES</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="IDR">IDR</option>
+          </select>
+        </div>
 
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Code</TableHead>
-              <TableHead>Account Name</TableHead>
-              <TableHead>Kind</TableHead>
-              <TableHead>Currency</TableHead>
-              <TableHead className="text-right">Book Balance</TableHead>
-              <TableHead>Version</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {accounts.length > 0 ? (
-              accounts.map((acc) => (
-                <TableRow key={acc.id}>
-                  <TableCell className="font-mono font-semibold text-[#F4F6FC]">
-                    {acc.code}
-                  </TableCell>
-                  <TableCell className="text-xs">
-                    <div>{acc.name}</div>
-                    <div className="text-[10px] text-[#9BA5BC]">ID: {acc.id.slice(0, 13)}...</div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={acc.kind === 'customer' ? 'info' : 'neutral'} size="sm">
-                      {acc.kind}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="font-mono text-xs font-semibold">{acc.currency}</TableCell>
-                  <TableCell className="text-right font-mono font-bold text-sm text-[#F4F6FC] tabular-nums">
-                    {parseFloat(acc.balance).toLocaleString('en-US', {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}{' '}
-                    <span className="text-[10px] text-[#9BA5BC] font-sans font-normal">
-                      {acc.currency}
-                    </span>
-                  </TableCell>
-                  <TableCell className="font-mono text-xs text-[#9BA5BC]">
-                    v{acc.balance_version}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={acc.status === 'active' ? 'positive' : 'warning'} size="sm" dot>
-                      {acc.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      <Button
-                        size="xs"
-                        variant="ghost"
-                        onClick={() => openAccountDetails(acc.id)}
-                        title="View Audit Invariant"
-                        icon={<Eye className="w-3 h-3" />}
-                      />
-                      <Button
-                        size="xs"
-                        variant="ghost"
-                        onClick={() => openOpeningBalanceFor(acc)}
-                        title="Init Opening Balance"
-                        icon={<Coins className="w-3 h-3 text-[#F2B85C]" />}
-                      />
-                      {onInitiateTransferFrom && (
+        <form onSubmit={handleSearchSubmit} className="relative w-full md:w-72 shrink-0">
+          <Search className="w-3.5 h-3.5 text-white/40 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <input
+            type="text"
+            placeholder="SEARCH CODE / NAME..."
+            value={search}
+            onChange={(e) => {
+              const val = e.target.value;
+              setSearch(val);
+              if (val === '') {
+                loadAccounts('');
+              }
+            }}
+            className="w-full h-9 pl-9 pr-8 text-base sm:text-xs rounded-lg bg-[#16181F] border border-white/15 text-white placeholder:text-white/30 focus:outline-none focus:border-white transition-all font-mono uppercase"
+          />
+          {search && (
+            <button
+              type="button"
+              onClick={() => {
+                setSearch('');
+                loadAccounts('');
+              }}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/40 hover:text-white p-0.5 rounded"
+              title="Clear search"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </form>
+      </motion.div>
+
+      {/* 3. Accounts List Table */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, delay: 0.1 }}
+      >
+        <Card>
+          <CardHeader>
+            <div>
+              <CardTitle>Accounts & Balances</CardTitle>
+              <CardDescription>
+                Real-time projection table kept strictly consistent with double-entry journal entries
+              </CardDescription>
+            </div>
+            <Button
+              size="xs"
+              variant="ghost"
+              onClick={() => loadAccounts()}
+              icon={<RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />}
+            >
+              Refresh
+            </Button>
+          </CardHeader>
+
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="whitespace-nowrap">Code</TableHead>
+                <TableHead className="whitespace-nowrap">Account Name</TableHead>
+                <TableHead className="whitespace-nowrap">Kind</TableHead>
+                <TableHead className="whitespace-nowrap">Currency</TableHead>
+                <TableHead className="text-right whitespace-nowrap">Book Balance</TableHead>
+                <TableHead className="whitespace-nowrap">Version</TableHead>
+                <TableHead className="whitespace-nowrap">Status</TableHead>
+                <TableHead className="text-right whitespace-nowrap">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {accounts.length > 0 ? (
+                accounts.map((acc) => (
+                  <TableRow key={acc.id}>
+                    <TableCell className="font-mono font-bold text-white whitespace-nowrap">
+                      {acc.code}
+                    </TableCell>
+                    <TableCell className="text-xs whitespace-nowrap">
+                      <div className="text-white font-medium">{acc.name}</div>
+                      <div className="text-[10px] text-white/40 font-mono">ID: {acc.id.slice(0, 13)}...</div>
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap">
+                      <Badge variant={acc.kind === 'customer' ? 'info' : 'neutral'} size="sm">
+                        {acc.kind}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="font-mono text-xs font-bold text-white/80 whitespace-nowrap">{acc.currency}</TableCell>
+                    <TableCell className="text-right font-mono font-bold text-sm text-white tabular-nums whitespace-nowrap">
+                      {parseFloat(acc.balance).toLocaleString('en-US', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}{' '}
+                      <span className="text-[10px] text-white/40 font-mono font-normal">
+                        {acc.currency}
+                      </span>
+                    </TableCell>
+                    <TableCell className="font-mono text-xs text-white/50 whitespace-nowrap">
+                      v{acc.balance_version}
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap">
+                      <Badge variant={acc.status === 'active' ? 'positive' : 'warning'} size="sm" dot>
+                        {acc.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right whitespace-nowrap">
+                      <div className="flex items-center justify-end gap-1.5">
                         <Button
                           size="xs"
-                          variant="secondary"
-                          onClick={() => onInitiateTransferFrom(acc.id)}
-                          icon={<ArrowRight className="w-3 h-3" />}
-                        >
-                          Transfer
-                        </Button>
-                      )}
-                    </div>
+                          variant="ghost"
+                          onClick={() => openAccountDetails(acc.id)}
+                          title="View Invariant Verification"
+                          icon={<Eye className="w-3.5 h-3.5" />}
+                        />
+                        <Button
+                          size="xs"
+                          variant="ghost"
+                          onClick={() => openOpeningBalanceFor(acc)}
+                          title="Init Opening Balance"
+                          icon={<Coins className="w-3.5 h-3.5 text-[#FFAA00]" />}
+                        />
+                        {onInitiateTransferFrom && (
+                          <Button
+                            size="xs"
+                            variant="secondary"
+                            onClick={() => onInitiateTransferFrom(acc.id)}
+                            icon={<ArrowRight className="w-3 h-3" />}
+                          >
+                            Transfer
+                          </Button>
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={8} className="text-center py-12 text-white/50 font-mono">
+                    No accounts found matching filter.
                   </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={8} className="text-center py-12 text-[#9BA5BC]">
-                  No accounts found matching filter.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </Card>
+              )}
+            </TableBody>
+          </Table>
+        </Card>
+      </motion.div>
 
       {/* Create Account Modal */}
       <Modal
@@ -329,9 +383,9 @@ export const AccountsView: React.FC<AccountsViewProps> = ({ onInitiateTransferFr
         title="Create New Account"
         description="Initialize a customer or system clearing account with atomic projection triggers."
       >
-        <form onSubmit={handleCreateAccount} className="space-y-4">
+        <form onSubmit={handleCreateAccount} className="space-y-4 font-sans">
           <div>
-            <label className="block text-xs font-semibold text-[#9BA5BC] uppercase tracking-wider mb-1">
+            <label className="block text-xs font-mono font-bold text-white/60 uppercase tracking-wider mb-1.5">
               Account Code *
             </label>
             <input
@@ -340,13 +394,13 @@ export const AccountsView: React.FC<AccountsViewProps> = ({ onInitiateTransferFr
               placeholder="e.g. CUST-TREASURY-01"
               value={createForm.code}
               onChange={(e) => setCreateForm({ ...createForm, code: e.target.value.toUpperCase() })}
-              className="w-full h-10 px-3 rounded-md bg-[#171C2C] border border-white/10 text-xs text-[#F4F6FC] font-mono focus:border-[#526CFF] focus:outline-none"
+              className="w-full h-10 px-3.5 rounded-lg bg-[#16181F] border border-white/15 text-base sm:text-xs text-white font-mono focus:border-white focus:outline-none transition-colors"
             />
-            <p className="text-[10px] text-[#9BA5BC] mt-1">Unique alphanumeric identifier code.</p>
+            <p className="text-[10px] text-white/40 font-mono mt-1">Unique alphanumeric identifier code.</p>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#9BA5BC] uppercase tracking-wider mb-1">
+            <label className="block text-xs font-mono font-bold text-white/60 uppercase tracking-wider mb-1.5">
               Account Name *
             </label>
             <input
@@ -355,50 +409,50 @@ export const AccountsView: React.FC<AccountsViewProps> = ({ onInitiateTransferFr
               placeholder="e.g. Operating Treasury Escrow"
               value={createForm.name}
               onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
-              className="w-full h-10 px-3 rounded-md bg-[#171C2C] border border-white/10 text-xs text-[#F4F6FC] focus:border-[#526CFF] focus:outline-none"
+              className="w-full h-10 px-3.5 rounded-lg bg-[#16181F] border border-white/15 text-base sm:text-xs text-white focus:border-white focus:outline-none transition-colors"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-[#9BA5BC] uppercase tracking-wider mb-1">
+              <label className="block text-xs font-mono font-bold text-white/60 uppercase tracking-wider mb-1.5">
                 Account Kind
               </label>
               <select
                 value={createForm.kind}
                 onChange={(e) => setCreateForm({ ...createForm, kind: e.target.value })}
-                className="w-full h-10 px-3 rounded-md bg-[#171C2C] border border-white/10 text-xs text-[#F4F6FC] focus:border-[#526CFF] focus:outline-none"
+                className="w-full h-10 px-3 rounded-lg bg-[#16181F] border border-white/15 text-base sm:text-xs text-white focus:border-white focus:outline-none transition-colors"
               >
                 <option value="customer">Customer (Non-negative bound)</option>
-                <option value="system">System (Clearing / Reservoir)</option>
+                <option value="system">System (Clearing Reserve)</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#9BA5BC] uppercase tracking-wider mb-1">
+              <label className="block text-xs font-mono font-bold text-white/60 uppercase tracking-wider mb-1.5">
                 Currency
               </label>
               <select
                 value={createForm.currency}
                 onChange={(e) => setCreateForm({ ...createForm, currency: e.target.value })}
-                className="w-full h-10 px-3 rounded-md bg-[#171C2C] border border-white/10 text-xs text-[#F4F6FC] font-mono focus:border-[#526CFF] focus:outline-none"
+                className="w-full h-10 px-3 rounded-lg bg-[#16181F] border border-white/15 text-base sm:text-xs text-white font-mono focus:border-white focus:outline-none transition-colors"
               >
                 <option value="USD">USD (US Dollar)</option>
                 <option value="EUR">EUR (Euro)</option>
-                <option value="GBP">GBP (British Pound)</option>
+                <option value="IDR">IDR (Indonesian Rupiah)</option>
               </select>
             </div>
           </div>
 
-          <div className="pt-2 flex items-center gap-2">
+          <div className="pt-2 flex items-center gap-2.5">
             <input
               type="checkbox"
               id="synthetic-check"
               checked={createForm.synthetic}
               onChange={(e) => setCreateForm({ ...createForm, synthetic: e.target.checked })}
-              className="rounded bg-[#171C2C] border-white/10 text-[#526CFF] focus:ring-[#526CFF]"
+              className="rounded bg-[#16181F] border-white/20 text-white focus:ring-white"
             />
-            <label htmlFor="synthetic-check" className="text-xs text-[#9BA5BC] select-none">
+            <label htmlFor="synthetic-check" className="text-xs text-white/70 select-none">
               Synthetic internal ledger account
             </label>
           </div>
@@ -421,9 +475,9 @@ export const AccountsView: React.FC<AccountsViewProps> = ({ onInitiateTransferFr
         title="Initialize Opening Balance"
         description="Creates an initial double-entry posting from system clearing reserve to target account."
       >
-        <form onSubmit={handleOpeningBalance} className="space-y-4">
+        <form onSubmit={handleOpeningBalance} className="space-y-4 font-sans">
           <div>
-            <label className="block text-xs font-semibold text-[#9BA5BC] uppercase tracking-wider mb-1">
+            <label className="block text-xs font-mono font-bold text-white/60 uppercase tracking-wider mb-1.5">
               Target Account *
             </label>
             <select
@@ -432,7 +486,7 @@ export const AccountsView: React.FC<AccountsViewProps> = ({ onInitiateTransferFr
               onChange={(e) =>
                 setOpeningBalanceForm({ ...openingBalanceForm, account_id: e.target.value })
               }
-              className="w-full h-10 px-3 rounded-md bg-[#171C2C] border border-white/10 text-xs text-[#F4F6FC] focus:border-[#526CFF] focus:outline-none font-mono"
+              className="w-full h-10 px-3.5 rounded-lg bg-[#16181F] border border-white/15 text-base sm:text-xs text-white focus:border-white focus:outline-none font-mono transition-colors"
             >
               <option value="">Select target account...</option>
               {accounts.map((a) => (
@@ -444,7 +498,7 @@ export const AccountsView: React.FC<AccountsViewProps> = ({ onInitiateTransferFr
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#9BA5BC] uppercase tracking-wider mb-1">
+            <label className="block text-xs font-mono font-bold text-white/60 uppercase tracking-wider mb-1.5">
               Credit Amount *
             </label>
             <input
@@ -456,12 +510,12 @@ export const AccountsView: React.FC<AccountsViewProps> = ({ onInitiateTransferFr
               onChange={(e) =>
                 setOpeningBalanceForm({ ...openingBalanceForm, amount: e.target.value })
               }
-              className="w-full h-10 px-3 rounded-md bg-[#171C2C] border border-white/10 text-xs text-[#F4F6FC] font-mono focus:border-[#526CFF] focus:outline-none"
+              className="w-full h-10 px-3.5 rounded-lg bg-[#16181F] border border-white/15 text-base sm:text-xs text-white font-mono focus:border-white focus:outline-none transition-colors"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#9BA5BC] uppercase tracking-wider mb-1">
+            <label className="block text-xs font-mono font-bold text-white/60 uppercase tracking-wider mb-1.5">
               Audit Reference
             </label>
             <input
@@ -471,12 +525,12 @@ export const AccountsView: React.FC<AccountsViewProps> = ({ onInitiateTransferFr
               onChange={(e) =>
                 setOpeningBalanceForm({ ...openingBalanceForm, reference: e.target.value })
               }
-              className="w-full h-10 px-3 rounded-md bg-[#171C2C] border border-white/10 text-xs text-[#F4F6FC] font-mono focus:border-[#526CFF] focus:outline-none"
+              className="w-full h-10 px-3.5 rounded-lg bg-[#16181F] border border-white/15 text-base sm:text-xs text-white font-mono focus:border-white focus:outline-none transition-colors"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#9BA5BC] uppercase tracking-wider mb-1">
+            <label className="block text-xs font-mono font-bold text-white/60 uppercase tracking-wider mb-1.5">
               Idempotency Key
             </label>
             <input
@@ -486,7 +540,7 @@ export const AccountsView: React.FC<AccountsViewProps> = ({ onInitiateTransferFr
               onChange={(e) =>
                 setOpeningBalanceForm({ ...openingBalanceForm, idempotency_key: e.target.value })
               }
-              className="w-full h-10 px-3 rounded-md bg-[#171C2C] border border-white/10 text-xs text-[#F4F6FC] font-mono focus:border-[#526CFF] focus:outline-none"
+              className="w-full h-10 px-3.5 rounded-lg bg-[#16181F] border border-white/15 text-base sm:text-xs text-white font-mono focus:border-white focus:outline-none transition-colors"
             />
           </div>
 
@@ -512,20 +566,20 @@ export const AccountsView: React.FC<AccountsViewProps> = ({ onInitiateTransferFr
         {selectedAccountDetail ? (
           <div className="space-y-6">
             {/* Header info */}
-            <div className="p-4 rounded-lg bg-[#171C2C] border border-white/[0.08] flex items-start justify-between">
+            <div className="p-4 rounded-xl bg-[#16181F] border border-white/[0.08] flex items-start justify-between">
               <div>
-                <span className="text-[10px] font-mono text-[#9BA5BC] uppercase">ACCOUNT CODE</span>
-                <div className="text-lg font-bold font-mono text-[#F4F6FC]">
+                <span className="text-[10px] font-mono text-white/50 uppercase tracking-wider">ACCOUNT CODE</span>
+                <div className="text-lg font-bold font-mono text-white">
                   {selectedAccountDetail.code}
                 </div>
-                <div className="text-xs text-[#9BA5BC]">{selectedAccountDetail.name}</div>
+                <div className="text-xs text-white/60 mt-0.5">{selectedAccountDetail.name}</div>
               </div>
               <div className="text-right">
-                <span className="text-[10px] font-mono text-[#9BA5BC] uppercase">BOOK BALANCE</span>
-                <div className="text-xl font-bold font-mono text-[#35D6A0] tabular-nums">
+                <span className="text-[10px] font-mono text-white/50 uppercase tracking-wider">BOOK BALANCE</span>
+                <div className="text-xl font-bold font-mono text-[#00D26A] tabular-nums">
                   {selectedAccountDetail.balance} {selectedAccountDetail.currency}
                 </div>
-                <div className="text-[10px] font-mono text-[#9BA5BC]">
+                <div className="text-[10px] font-mono text-white/40">
                   Version {selectedAccountDetail.balance_version}
                 </div>
               </div>
@@ -533,10 +587,10 @@ export const AccountsView: React.FC<AccountsViewProps> = ({ onInitiateTransferFr
 
             {/* Invariant verification badge */}
             <div
-              className={`p-4 rounded-lg border flex items-center gap-3 ${
+              className={`p-4 rounded-xl border flex items-center gap-3 ${
                 selectedAccountDetail.projection_matches_journal
-                  ? 'bg-[#35D6A0]/10 border-[#35D6A0]/30 text-[#35D6A0]'
-                  : 'bg-[#FF6B78]/10 border-[#FF6B78]/30 text-[#FF6B78]'
+                  ? 'bg-[#00D26A]/10 border-[#00D26A]/30 text-[#00D26A]'
+                  : 'bg-[#FF453A]/10 border-[#FF453A]/30 text-[#FF453A]'
               }`}
             >
               {selectedAccountDetail.projection_matches_journal ? (
@@ -545,12 +599,12 @@ export const AccountsView: React.FC<AccountsViewProps> = ({ onInitiateTransferFr
                 <AlertCircle className="w-5 h-5 shrink-0" />
               )}
               <div className="text-xs">
-                <span className="font-semibold block">
+                <span className="font-mono font-bold block">
                   {selectedAccountDetail.projection_matches_journal
                     ? 'Projection Matches Journal Entries Exactly'
                     : 'Discrepancy Detected between Projection and Journal Entries'}
                 </span>
-                <span className="text-[11px] opacity-80">
+                <span className="text-[11px] opacity-80 font-mono">
                   Calculated from Σ(credits) - Σ(debits) = {selectedAccountDetail.journal_balance}{' '}
                   {selectedAccountDetail.currency}.
                 </span>
@@ -558,24 +612,24 @@ export const AccountsView: React.FC<AccountsViewProps> = ({ onInitiateTransferFr
             </div>
 
             {/* Totals Breakdown */}
-            <div className="grid grid-cols-3 gap-3">
-              <div className="p-3 rounded bg-[#171C2C] border border-white/[0.06]">
-                <span className="text-[10px] text-[#9BA5BC] uppercase font-mono">Total Debits</span>
-                <div className="text-sm font-bold font-mono text-[#FF6B78] mt-1 tabular-nums">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="p-3.5 rounded-xl bg-[#16181F] border border-white/[0.06]">
+                <span className="text-[10px] text-white/50 uppercase font-mono tracking-wider">Total Debits</span>
+                <div className="text-sm font-bold font-mono text-[#FF453A] mt-1 tabular-nums">
                   {selectedAccountDetail.totals.total_debits}
                 </div>
               </div>
 
-              <div className="p-3 rounded bg-[#171C2C] border border-white/[0.06]">
-                <span className="text-[10px] text-[#9BA5BC] uppercase font-mono">Total Credits</span>
-                <div className="text-sm font-bold font-mono text-[#35D6A0] mt-1 tabular-nums">
+              <div className="p-3.5 rounded-xl bg-[#16181F] border border-white/[0.06]">
+                <span className="text-[10px] text-white/50 uppercase font-mono tracking-wider">Total Credits</span>
+                <div className="text-sm font-bold font-mono text-[#00D26A] mt-1 tabular-nums">
                   {selectedAccountDetail.totals.total_credits}
                 </div>
               </div>
 
-              <div className="p-3 rounded bg-[#171C2C] border border-white/[0.06]">
-                <span className="text-[10px] text-[#9BA5BC] uppercase font-mono">Total Entries</span>
-                <div className="text-sm font-bold font-mono text-[#F4F6FC] mt-1 tabular-nums">
+              <div className="p-3.5 rounded-xl bg-[#16181F] border border-white/[0.06]">
+                <span className="text-[10px] text-white/50 uppercase font-mono tracking-wider">Total Entries</span>
+                <div className="text-sm font-bold font-mono text-white mt-1 tabular-nums">
                   {selectedAccountDetail.totals.entry_count}
                 </div>
               </div>
@@ -588,7 +642,7 @@ export const AccountsView: React.FC<AccountsViewProps> = ({ onInitiateTransferFr
             </div>
           </div>
         ) : (
-          <div className="py-8 text-center text-xs text-[#9BA5BC]">Loading details...</div>
+          <div className="py-8 text-center text-xs text-white/50 font-mono">Loading details...</div>
         )}
       </Modal>
     </div>

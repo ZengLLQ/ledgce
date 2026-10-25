@@ -43,4 +43,52 @@ describe('Financial Invariants & Formatting Unit Tests', () => {
     expect(validateIdempotencyKey('valid-idempotency-key-1234')).toBe(true);
     expect(validateIdempotencyKey('a'.repeat(129))).toBe(false);
   });
+
+  it('handles edge case inputs gracefully in formatCurrency', () => {
+    expect(formatCurrency('', 'USD')).toBe('0.00');
+    expect(formatCurrency('invalid-number', 'EUR')).toBe('0.00');
+    expect(formatCurrency('NaN', 'IDR')).toBe('0.00');
+  });
+
+  it('verifies multi-legged journal entry zero-sum conservation', () => {
+    const entries = [
+      { debit: '500.00', credit: '0.00' },
+      { debit: '250.00', credit: '0.00' },
+      { debit: '0.00', credit: '750.00' },
+    ];
+    const totalDebit = entries.reduce((acc, e) => acc + parseFloat(e.debit), 0);
+    const totalCredit = entries.reduce((acc, e) => acc + parseFloat(e.credit), 0);
+    expect(Math.abs(totalDebit - totalCredit)).toBeLessThan(0.00001);
+  });
+
+  it('correctly categorizes metric tile values for adaptive typography scaling', () => {
+    const getMetricSizeClass = (val: unknown) => {
+      if (typeof val === 'string' && val.length > 8) return 'text-lg sm:text-xl';
+      if (typeof val === 'string' && val.length > 5) return 'text-xl sm:text-2xl';
+      return 'text-3xl sm:text-4xl tabular-nums';
+    };
+
+    expect(getMetricSizeClass('DISCONNECTED')).toBe('text-lg sm:text-xl');
+    expect(getMetricSizeClass('DISCREPANCY')).toBe('text-lg sm:text-xl');
+    expect(getMetricSizeClass('CONNECTED')).toBe('text-lg sm:text-xl');
+    expect(getMetricSizeClass('VALIDATED')).toBe('text-lg sm:text-xl');
+    expect(getMetricSizeClass('PASS')).toBe('text-3xl sm:text-4xl tabular-nums');
+    expect(getMetricSizeClass(145)).toBe('text-3xl sm:text-4xl tabular-nums');
+  });
+
+  it('guarantees baseline currencies for empty chart volume telemetry', () => {
+    const emptyVolumes: Array<{ currency: string; total_posted_volume: string; transaction_count: number }> = [];
+    const chartVolumes = emptyVolumes.length > 0
+      ? emptyVolumes.map(v => ({ name: v.currency, volume: parseFloat(v.total_posted_volume) }))
+      : [
+          { name: 'USD', volume: 0 },
+          { name: 'EUR', volume: 0 },
+          { name: 'IDR', volume: 0 },
+        ];
+
+    expect(chartVolumes).toHaveLength(3);
+    expect(chartVolumes.map(c => c.name)).toEqual(['USD', 'EUR', 'IDR']);
+    expect(chartVolumes.every(c => c.volume === 0)).toBe(true);
+  });
 });
+

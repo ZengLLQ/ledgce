@@ -7,7 +7,7 @@ export const Table: React.FC<React.TableHTMLAttributes<HTMLTableElement>> = ({
   children,
   ...props
 }) => (
-  <div className="w-full overflow-x-auto border border-white/10 rounded-2xl bg-[#121212]">
+  <div className="w-full overflow-x-auto no-scrollbar rounded-xl border border-white/[0.08] bg-[#0E1015]">
     <table
       className={twMerge(clsx('w-full text-left text-xs text-[#FAFAFA] border-collapse', className))}
       {...props}
@@ -24,7 +24,7 @@ export const TableHeader: React.FC<React.HTMLAttributes<HTMLTableSectionElement>
 }) => (
   <thead
     className={twMerge(
-      clsx('bg-[#161616] border-b border-white/10 uppercase text-[10px] tracking-[0.15em] font-mono font-bold text-white/50', className)
+      clsx('bg-[#151821] border-b border-white/[0.08] uppercase text-[10px] tracking-[0.14em] font-mono font-bold text-white/50 select-none', className)
     )}
     {...props}
   >
@@ -37,7 +37,7 @@ export const TableBody: React.FC<React.HTMLAttributes<HTMLTableSectionElement>> 
   children,
   ...props
 }) => (
-  <tbody className={twMerge(clsx('divide-y divide-white/[0.06]', className))} {...props}>
+  <tbody className={twMerge(clsx('divide-y divide-white/[0.05]', className))} {...props}>
     {children}
   </tbody>
 );
@@ -63,7 +63,7 @@ export const TableHead: React.FC<React.ThHTMLAttributes<HTMLTableCellElement>> =
   ...props
 }) => (
   <th
-    className={twMerge(clsx('py-3.5 px-5 font-mono font-bold select-none', className))}
+    className={twMerge(clsx('py-3 px-3.5 sm:px-4 font-mono font-bold select-none whitespace-nowrap', className))}
     {...props}
   >
     {children}
@@ -75,7 +75,7 @@ export const TableCell: React.FC<React.TdHTMLAttributes<HTMLTableCellElement>> =
   children,
   ...props
 }) => (
-  <td className={twMerge(clsx('py-3.5 px-5 tabular-nums text-white/90', className))} {...props}>
+  <td className={twMerge(clsx('py-3 px-3.5 sm:px-4 text-white/90', className))} {...props}>
     {children}
   </td>
 );

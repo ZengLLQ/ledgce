@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Shell } from './components/layout/Shell';
 import { ToastProvider, useToast } from './components/ui/Toast';
@@ -91,31 +92,42 @@ const LedgceApp: React.FC = () => {
       }}
       onQuickReconcile={handleQuickReconcile}
     >
-      {currentRoute === 'landing' && <LandingView onNavigate={setCurrentRoute} />}
-      {currentRoute === 'overview' && (
-        <OverviewView
-          onNavigate={setCurrentRoute}
-          onOpenTransferModal={() => {
-            setTransferSourceAccountId(undefined);
-            setCurrentRoute('transfers');
-            setIsTransferModalOpen(true);
-          }}
-        />
-      )}
-      {currentRoute === 'accounts' && (
-        <AccountsView onInitiateTransferFrom={handleInitiateTransferFrom} />
-      )}
-      {currentRoute === 'transfers' && (
-        <TransfersView
-          initialSourceAccountId={transferSourceAccountId}
-          isTransferModalOpen={isTransferModalOpen}
-          onCloseTransferModal={() => setIsTransferModalOpen(false)}
-        />
-      )}
-      {currentRoute === 'explorer' && <ExplorerView />}
-      {currentRoute === 'reconciliation' && <ReconciliationView />}
-      {currentRoute === 'outbox' && <OutboxView />}
-      {currentRoute === 'system-health' && <SystemHealthView />}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentRoute}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.18, ease: 'easeOut' }}
+          className="w-full"
+        >
+          {currentRoute === 'landing' && <LandingView onNavigate={setCurrentRoute} />}
+          {currentRoute === 'overview' && (
+            <OverviewView
+              onNavigate={setCurrentRoute}
+              onOpenTransferModal={() => {
+                setTransferSourceAccountId(undefined);
+                setCurrentRoute('transfers');
+                setIsTransferModalOpen(true);
+              }}
+            />
+          )}
+          {currentRoute === 'accounts' && (
+            <AccountsView onInitiateTransferFrom={handleInitiateTransferFrom} />
+          )}
+          {currentRoute === 'transfers' && (
+            <TransfersView
+              initialSourceAccountId={transferSourceAccountId}
+              isTransferModalOpen={isTransferModalOpen}
+              onCloseTransferModal={() => setIsTransferModalOpen(false)}
+            />
+          )}
+          {currentRoute === 'explorer' && <ExplorerView />}
+          {currentRoute === 'reconciliation' && <ReconciliationView />}
+          {currentRoute === 'outbox' && <OutboxView />}
+          {currentRoute === 'system-health' && <SystemHealthView />}
+        </motion.div>
+      </AnimatePresence>
     </Shell>
   );
 };
