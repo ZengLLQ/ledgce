@@ -1,5 +1,5 @@
 use metrics_exporter_prometheus::{PrometheusBuilder, PrometheusHandle};
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
+use tracing_subscriber::{EnvFilter, layer::SubscriberExt, util::SubscriberInitExt};
 
 /// Initializes JSON structured logging with environment filtering.
 pub fn init_tracing(service_name: &str) {
@@ -8,7 +8,11 @@ pub fn init_tracing(service_name: &str) {
 
     tracing_subscriber::registry()
         .with(filter)
-        .with(tracing_subscriber::fmt::layer().json().with_current_span(true))
+        .with(
+            tracing_subscriber::fmt::layer()
+                .json()
+                .with_current_span(true),
+        )
         .init();
 
     tracing::info!(service = service_name, "Observability tracing initialized");

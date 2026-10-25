@@ -1,8 +1,8 @@
-use std::str::FromStr;
 use hex::ToHex;
 use rust_decimal::Decimal;
 use sha2::{Digest, Sha256};
 use sqlx::PgPool;
+use std::str::FromStr;
 use time::OffsetDateTime;
 use uuid::Uuid;
 
@@ -130,7 +130,9 @@ impl TransferService {
         .await?;
 
         if locked_accounts.len() < 2 {
-            return Err(AppError::NotFound("One or both accounts were not found".into()));
+            return Err(AppError::NotFound(
+                "One or both accounts were not found".into(),
+            ));
         }
 
         let src_acct = locked_accounts
@@ -424,10 +426,14 @@ impl TransferService {
         )
         .fetch_optional(&mut *tx)
         .await?
-        .ok_or_else(|| AppError::NotFound(format!("Transaction {} not found", req.transaction_id)))?;
+        .ok_or_else(|| {
+            AppError::NotFound(format!("Transaction {} not found", req.transaction_id))
+        })?;
 
         if orig.kind == "reversal" {
-            return Err(AppError::Validation("Cannot reverse a reversal transaction".into()));
+            return Err(AppError::Validation(
+                "Cannot reverse a reversal transaction".into(),
+            ));
         }
 
         // Check if already reversed
@@ -795,14 +801,16 @@ impl TransferService {
         &self,
         reference: &str,
     ) -> Result<TransactionDetail, AppError> {
-        let id: Uuid =
-            sqlx::query_scalar("SELECT id FROM transactions WHERE reference = $1")
-                .bind(reference)
-                .fetch_optional(&self.pool)
-                .await?
-                .ok_or_else(|| {
-                    AppError::NotFound(format!("Transaction with reference '{}' not found", reference))
-                })?;
+        let id: Uuid = sqlx::query_scalar("SELECT id FROM transactions WHERE reference = $1")
+            .bind(reference)
+            .fetch_optional(&self.pool)
+            .await?
+            .ok_or_else(|| {
+                AppError::NotFound(format!(
+                    "Transaction with reference '{}' not found",
+                    reference
+                ))
+            })?;
 
         self.get_transaction(id).await
     }

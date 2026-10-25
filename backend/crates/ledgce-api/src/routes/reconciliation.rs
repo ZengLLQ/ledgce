@@ -1,10 +1,8 @@
 use axum::{
-    extract::{Path, Query, State},
     Extension, Json,
+    extract::{Path, Query, State},
 };
-use ledgce_application::model::{
-    ReconciliationRunDetail, ReconciliationRunSummary,
-};
+use ledgce_application::model::{ReconciliationRunDetail, ReconciliationRunSummary};
 use serde::Deserialize;
 use utoipa::{IntoParams, ToSchema};
 use uuid::Uuid;
@@ -49,7 +47,10 @@ pub async fn trigger_reconciliation(
         .and_then(|b| b.0.triggered_by)
         .unwrap_or_else(|| role.principal_name().to_string());
 
-    let result = state.reconciliation.run_reconciliation(&triggered_by).await?;
+    let result = state
+        .reconciliation
+        .run_reconciliation(&triggered_by)
+        .await?;
     Ok(Json(result))
 }
 

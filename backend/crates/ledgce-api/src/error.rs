@@ -1,7 +1,7 @@
 use axum::{
+    Json,
     http::StatusCode,
     response::{IntoResponse, Response},
-    Json,
 };
 use ledgce_application::error::AppError;
 use ledgce_domain::DomainError;

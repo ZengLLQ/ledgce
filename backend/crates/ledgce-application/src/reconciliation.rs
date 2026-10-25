@@ -253,7 +253,11 @@ impl ReconciliationService {
 
         let finished_at = OffsetDateTime::now_utc();
         let duration_ms = ((finished_at - started_at).whole_milliseconds() as i64).max(1);
-        let status = if violations.is_empty() { "passed" } else { "failed" };
+        let status = if violations.is_empty() {
+            "passed"
+        } else {
+            "failed"
+        };
         let run_id = Uuid::now_v7();
         let violation_count = violations.len() as i32;
         let violations_json = serde_json::to_value(&violations).unwrap_or_default();
@@ -307,10 +311,7 @@ impl ReconciliationService {
     }
 
     /// Lists past reconciliation runs.
-    pub async fn list_runs(
-        &self,
-        limit: i64,
-    ) -> Result<Vec<ReconciliationRunSummary>, AppError> {
+    pub async fn list_runs(&self, limit: i64) -> Result<Vec<ReconciliationRunSummary>, AppError> {
         let rows = sqlx::query_as(
             r#"
             SELECT

@@ -20,7 +20,10 @@ pub enum DomainError {
     #[error("currency mismatch: expected {expected}, found {found}")]
     CurrencyMismatch { expected: Currency, found: Currency },
     #[error("insufficient funds: available {available}, requested {requested}")]
-    InsufficientFunds { available: Decimal, requested: Decimal },
+    InsufficientFunds {
+        available: Decimal,
+        requested: Decimal,
+    },
     #[error("journal is unbalanced: debit {debit}, credit {credit}")]
     Unbalanced { debit: Decimal, credit: Decimal },
     #[error("illegal transaction status transition {from} -> {to}")]

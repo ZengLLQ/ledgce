@@ -1,12 +1,12 @@
 use axum::{
+    Router,
     body::Body,
-    http::{header, Method, Request, StatusCode},
+    http::{Method, Request, StatusCode, header},
     middleware,
     routing::{get, post},
-    Router,
 };
 use http_body_util::BodyExt;
-use ledgce_api::auth::{auth_middleware, Role};
+use ledgce_api::auth::{Role, auth_middleware};
 use ledgce_api::state::AppState;
 use sqlx::postgres::PgPoolOptions;
 use tower::ServiceExt;
@@ -14,7 +14,9 @@ use tower::ServiceExt;
 // Helper to construct a lightweight test router with auth middleware
 fn build_test_router(admin_token: &str, reader_token: &str) -> Router {
     // Construct dummy AppState with disconnected pool (state is only used for tokens in auth middleware)
-    let pool = PgPoolOptions::new().connect_lazy("postgres://localhost/test").unwrap();
+    let pool = PgPoolOptions::new()
+        .connect_lazy("postgres://localhost/test")
+        .unwrap();
     let state = AppState::new(pool, admin_token.into(), reader_token.into());
 
     let test_routes = Router::new()

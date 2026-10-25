@@ -1,6 +1,6 @@
-use std::time::Duration;
 use ledgce_application::OutboxService;
 use sqlx::postgres::PgPoolOptions;
+use std::time::Duration;
 use tokio::time::sleep;
 use uuid::Uuid;
 

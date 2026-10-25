@@ -1,12 +1,12 @@
+use crate::error::ErrorResponse;
+use crate::state::AppState;
 use axum::{
+    Json,
     extract::{Request, State},
     http::{Method, StatusCode},
     middleware::Next,
     response::{IntoResponse, Response},
-    Json,
 };
-use crate::error::ErrorResponse;
-use crate::state::AppState;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Role {
@@ -49,7 +49,8 @@ pub async fn auth_middleware(
                 StatusCode::UNAUTHORIZED,
                 Json(ErrorResponse {
                     error: "unauthorized".into(),
-                    message: "Missing or malformed Authorization header. Expected 'Bearer <token>'".into(),
+                    message: "Missing or malformed Authorization header. Expected 'Bearer <token>'"
+                        .into(),
                 }),
             )
                 .into_response());
@@ -57,8 +58,8 @@ pub async fn auth_middleware(
     };
 
     // 3. Verify token against Admin and Reader roles
-    let is_admin = (!state.admin_token.is_empty() && token == state.admin_token)
-        || token == "dev_admin_token";
+    let is_admin =
+        (!state.admin_token.is_empty() && token == state.admin_token) || token == "dev_admin_token";
     let is_reader = (!state.reader_token.is_empty() && token == state.reader_token)
         || token == "dev_reader_token";
 

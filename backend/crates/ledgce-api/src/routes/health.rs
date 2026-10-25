@@ -1,4 +1,4 @@
-use axum::{extract::State, Json};
+use axum::{Json, extract::State};
 use ledgce_application::model::{
     ArmFaultRequest, FaultInjectionView, OverviewStats, SystemHealthView,
 };
@@ -48,9 +48,7 @@ pub async fn live_health() -> Json<HealthCheckResponse> {
         (status = 401, description = "Unauthorized")
     )
 )]
-pub async fn get_overview(
-    State(state): State<AppState>,
-) -> Result<Json<OverviewStats>, ApiError> {
+pub async fn get_overview(State(state): State<AppState>) -> Result<Json<OverviewStats>, ApiError> {
     let overview = state.queries.get_overview().await?;
     Ok(Json(overview))
 }

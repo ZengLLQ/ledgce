@@ -1,13 +1,13 @@
-use std::time::Duration;
 use axum::{
-    http::{header, HeaderValue, Method},
     Router,
+    http::{HeaderValue, Method, header},
 };
 use ledgce_api::auth;
 use ledgce_api::openapi::ApiDoc;
 use ledgce_api::routes;
 use ledgce_api::state::AppState;
 use sqlx::postgres::PgPoolOptions;
+use std::time::Duration;
 use tower_http::cors::CorsLayer;
 use tower_http::trace::TraceLayer;
 use utoipa::OpenApi;
@@ -21,8 +21,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 2. Setup structured logging
     tracing_subscriber::fmt()
         .with_env_filter(
-            tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| "info,ledgce_api=debug,ledgce_application=debug,tower_http=debug".into()),
+            tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| {
+                "info,ledgce_api=debug,ledgce_application=debug,tower_http=debug".into()
+            }),
         )
         .json()
         .init();
@@ -101,7 +102,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 11. Bind and serve with graceful shutdown
     let listener = tokio::net::TcpListener::bind(&bind_addr).await?;
     tracing::info!("Ledgce REST API listening on http://{}", bind_addr);
-    tracing::info!("Interactive Swagger UI available at http://{}/swagger-ui", bind_addr);
+    tracing::info!(
+        "Interactive Swagger UI available at http://{}/swagger-ui",
+        bind_addr
+    );
 
     axum::serve(listener, app)
         .with_graceful_shutdown(shutdown_signal())

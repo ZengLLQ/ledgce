@@ -1,15 +1,16 @@
-use std::str::FromStr;
+#![allow(clippy::unwrap_used)]
+
 use rust_decimal::Decimal;
 use sqlx::postgres::PgPoolOptions;
+use std::str::FromStr;
 use uuid::Uuid;
 
-use ledgce_application::{
-    db, AccountService, AppError, LedgerQueryService, OutboxService, ReconciliationService,
-    SystemService, TransferService,
-};
 use ledgce_application::model::{
-    AccountFilter, CreateAccountRequest, InitOpeningBalanceRequest, PostTransferRequest,
-    ReverseTransferRequest,
+    CreateAccountRequest, InitOpeningBalanceRequest, PostTransferRequest, ReverseTransferRequest,
+};
+use ledgce_application::{
+    AccountService, AppError, LedgerQueryService, OutboxService, ReconciliationService,
+    SystemService, TransferService, db,
 };
 
 async fn setup_test_services() -> (
@@ -20,9 +21,8 @@ async fn setup_test_services() -> (
     ReconciliationService,
     SystemService,
 ) {
-    let db_url = std::env::var("DATABASE_URL").unwrap_or_else(|_| {
-        "postgres://ledgce:ledgce_local_dev@127.0.0.1:5433/ledgce".to_string()
-    });
+    let db_url = std::env::var("DATABASE_URL")
+        .unwrap_or_else(|_| "postgres://ledgce:ledgce_local_dev@127.0.0.1:5433/ledgce".to_string());
 
     let pool = PgPoolOptions::new()
         .max_connections(10)
@@ -141,8 +141,14 @@ async fn test_full_financial_core_and_reliability_lifecycle() {
     // Check updated balances
     let alice_after = account_svc.get_account(alice.id).await.unwrap();
     let bob_after = account_svc.get_account(bob.id).await.unwrap();
-    assert_eq!(alice_after.account.balance, Decimal::from_str("750.00").unwrap());
-    assert_eq!(bob_after.account.balance, Decimal::from_str("250.00").unwrap());
+    assert_eq!(
+        alice_after.account.balance,
+        Decimal::from_str("750.00").unwrap()
+    );
+    assert_eq!(
+        bob_after.account.balance,
+        Decimal::from_str("250.00").unwrap()
+    );
 
     // 4. Idempotency Replay Test
     // Same idempotency key + same payload => returns replayed: true with identical transaction
@@ -163,7 +169,10 @@ async fn test_full_financial_core_and_reliability_lifecycle() {
         .expect("Replay should succeed");
 
     assert!(replay_outcome.replayed);
-    assert_eq!(replay_outcome.transaction.summary.id, transfer_outcome.transaction.summary.id);
+    assert_eq!(
+        replay_outcome.transaction.summary.id,
+        transfer_outcome.transaction.summary.id
+    );
 
     // Idempotency key reuse with DIFFERENT payload => returns IdempotencyKeyReuse error
     let reuse_err = transfer_svc
@@ -223,12 +232,18 @@ async fn test_full_financial_core_and_reliability_lifecycle() {
 
     assert!(!rev_outcome.replayed);
     assert_eq!(rev_outcome.transaction.summary.kind, "reversal");
-    assert_eq!(rev_outcome.transaction.summary.reverses_transaction_id, Some(transfer_outcome.transaction.summary.id));
+    assert_eq!(
+        rev_outcome.transaction.summary.reverses_transaction_id,
+        Some(transfer_outcome.transaction.summary.id)
+    );
 
     // Balances returned to pre-transfer state
     let alice_after_rev = account_svc.get_account(alice.id).await.unwrap();
     let bob_after_rev = account_svc.get_account(bob.id).await.unwrap();
-    assert_eq!(alice_after_rev.account.balance, Decimal::from_str("1000.00").unwrap());
+    assert_eq!(
+        alice_after_rev.account.balance,
+        Decimal::from_str("1000.00").unwrap()
+    );
     assert_eq!(bob_after_rev.account.balance, Decimal::ZERO);
 
     // 7. Background Outbox Processing
@@ -237,7 +252,10 @@ async fn test_full_financial_core_and_reliability_lifecycle() {
         .await
         .expect("Outbox batch processing failed");
 
-    assert!(processed_count > 0, "Expected at least 1 outbox event to be processed");
+    assert!(
+        processed_count > 0,
+        "Expected at least 1 outbox event to be processed"
+    );
 
     // Verify transaction lifecycle advanced to processed
     let tx_check = transfer_svc
@@ -252,7 +270,11 @@ async fn test_full_financial_core_and_reliability_lifecycle() {
         .await
         .expect("Reconciliation run failed");
 
-    assert_eq!(recon_run.summary.status, "passed", "Reconciliation violations found: {:?}", recon_run.violations);
+    assert_eq!(
+        recon_run.summary.status, "passed",
+        "Reconciliation violations found: {:?}",
+        recon_run.violations
+    );
     assert_eq!(recon_run.summary.violation_count, 0);
 
     // 9. System Health Check

@@ -29,21 +29,22 @@ impl From<sqlx::Error> for AppError {
 /// Postgres SQLSTATE / constraint helpers.
 #[allow(dead_code)]
 pub(crate) fn db_code(err: &sqlx::Error) -> Option<String> {
-    err.as_database_error().and_then(|e| e.code().map(|c| c.to_string()))
+    err.as_database_error()
+        .and_then(|e| e.code().map(|c| c.to_string()))
 }
 
 #[allow(dead_code)]
 pub(crate) fn db_constraint(err: &sqlx::Error) -> Option<String> {
-    err.as_database_error().and_then(|e| e.constraint().map(str::to_owned))
+    err.as_database_error()
+        .and_then(|e| e.constraint().map(str::to_owned))
 }
 
 impl AppError {
     /// Short machine-readable class used for metrics labels and structured logs.
     pub fn class(&self) -> &'static str {
         match self {
-            AppError::Domain(DomainError::InsufficientFunds { .. }) | AppError::InsufficientFundsDetectedByDatabase => {
-                "insufficient_funds"
-            }
+            AppError::Domain(DomainError::InsufficientFunds { .. })
+            | AppError::InsufficientFundsDetectedByDatabase => "insufficient_funds",
             AppError::Domain(_) | AppError::Validation(_) => "validation",
             AppError::NotFound(_) => "not_found",
             AppError::IdempotencyKeyReuse => "idempotency_key_reuse",

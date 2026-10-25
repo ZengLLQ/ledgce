@@ -1,6 +1,6 @@
 use axum::{
-    extract::{Path, Query, State},
     Extension, Json,
+    extract::{Path, Query, State},
 };
 use ledgce_application::model::{
     AccountDetail, AccountFilter, AccountPage, AccountView, CreateAccountRequest,
@@ -93,7 +93,10 @@ pub async fn create_account(
     Extension(role): Extension<Role>,
     Json(req): Json<CreateAccountRequest>,
 ) -> Result<Json<AccountView>, ApiError> {
-    let account = state.accounts.create_account(req, role.principal_name()).await?;
+    let account = state
+        .accounts
+        .create_account(req, role.principal_name())
+        .await?;
     Ok(Json(account))
 }
 

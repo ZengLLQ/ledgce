@@ -1,5 +1,5 @@
-use std::str::FromStr;
 use sqlx::PgPool;
+use std::str::FromStr;
 use uuid::Uuid;
 
 use ledgce_domain::Currency;

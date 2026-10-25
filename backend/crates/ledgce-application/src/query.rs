@@ -151,20 +151,17 @@ impl LedgerQueryService {
 
     /// Computes platform overview metrics and ledger integrity status.
     pub async fn get_overview(&self) -> Result<OverviewStats, AppError> {
-        let account_count: i64 =
-            sqlx::query_scalar("SELECT COUNT(*) FROM accounts")
-                .fetch_one(&self.pool)
-                .await?;
+        let account_count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM accounts")
+            .fetch_one(&self.pool)
+            .await?;
 
-        let transaction_count: i64 =
-            sqlx::query_scalar("SELECT COUNT(*) FROM transactions")
-                .fetch_one(&self.pool)
-                .await?;
+        let transaction_count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM transactions")
+            .fetch_one(&self.pool)
+            .await?;
 
-        let entry_count: i64 =
-            sqlx::query_scalar("SELECT COUNT(*) FROM journal_entries")
-                .fetch_one(&self.pool)
-                .await?;
+        let entry_count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM journal_entries")
+            .fetch_one(&self.pool)
+            .await?;
 
         let outbox_pending_count: i64 = sqlx::query_scalar(
             "SELECT COUNT(*) FROM outbox_events WHERE status IN ('pending', 'processing')",

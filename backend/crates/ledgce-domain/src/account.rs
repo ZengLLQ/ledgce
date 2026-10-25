@@ -30,7 +30,9 @@ impl FromStr for AccountKind {
         match s {
             "customer" => Ok(Self::Customer),
             "system" => Ok(Self::System),
-            other => Err(DomainError::UnsupportedCurrency(format!("account kind {other}"))),
+            other => Err(DomainError::UnsupportedCurrency(format!(
+                "account kind {other}"
+            ))),
         }
     }
 }
@@ -66,7 +68,9 @@ impl FromStr for AccountStatus {
             "active" => Ok(Self::Active),
             "frozen" => Ok(Self::Frozen),
             "closed" => Ok(Self::Closed),
-            other => Err(DomainError::UnsupportedCurrency(format!("account status {other}"))),
+            other => Err(DomainError::UnsupportedCurrency(format!(
+                "account status {other}"
+            ))),
         }
     }
 }
@@ -86,7 +90,10 @@ impl Account {
         if self.status == AccountStatus::Active {
             Ok(())
         } else {
-            Err(DomainError::AccountNotActive { account: self.code.clone(), status: self.status.to_string() })
+            Err(DomainError::AccountNotActive {
+                account: self.code.clone(),
+                status: self.status.to_string(),
+            })
         }
     }
 }

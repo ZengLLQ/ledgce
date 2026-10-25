@@ -39,7 +39,10 @@ impl TransactionStatus {
         if self.can_transition_to(next) {
             Ok(next)
         } else {
-            Err(DomainError::IllegalTransition { from: self.to_string(), to: next.to_string() })
+            Err(DomainError::IllegalTransition {
+                from: self.to_string(),
+                to: next.to_string(),
+            })
         }
     }
 }
@@ -57,7 +60,10 @@ impl FromStr for TransactionStatus {
             "posted" => Ok(Self::Posted),
             "published" => Ok(Self::Published),
             "processed" => Ok(Self::Processed),
-            other => Err(DomainError::IllegalTransition { from: other.to_owned(), to: "?".to_owned() }),
+            other => Err(DomainError::IllegalTransition {
+                from: other.to_owned(),
+                to: "?".to_owned(),
+            }),
         }
     }
 }

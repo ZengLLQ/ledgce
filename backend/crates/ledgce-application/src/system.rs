@@ -16,9 +16,7 @@ impl SystemService {
     /// Evaluates live platform health across database connectivity,
     /// ledger invariant assertions, outbox queue depths, and worker liveness.
     pub async fn get_health(&self) -> Result<SystemHealthView, AppError> {
-        let db_ping: Result<i32, _> = sqlx::query_scalar("SELECT 1")
-            .fetch_one(&self.pool)
-            .await;
+        let db_ping: Result<i32, _> = sqlx::query_scalar("SELECT 1").fetch_one(&self.pool).await;
         let database_connected = db_ping.is_ok();
 
         let unbalanced_currencies: i64 = sqlx::query_scalar(

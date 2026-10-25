@@ -1,6 +1,6 @@
 use axum::{
-    extract::{Path, Query, State},
     Json,
+    extract::{Path, Query, State},
 };
 use ledgce_application::model::{OutboxFilter, OutboxView, Page};
 use serde::{Deserialize, Serialize};

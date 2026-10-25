@@ -25,11 +25,17 @@ impl Money {
         }
         let normalized = amount.normalize();
         if normalized.scale() > currency.scale() {
-            return Err(DomainError::ExcessPrecision { currency, max_scale: currency.scale() });
+            return Err(DomainError::ExcessPrecision {
+                currency,
+                max_scale: currency.scale(),
+            });
         }
         let mut canonical = normalized;
         canonical.rescale(currency.scale());
-        Ok(Self { amount: canonical, currency })
+        Ok(Self {
+            amount: canonical,
+            currency,
+        })
     }
 
     pub fn amount(&self) -> Decimal {

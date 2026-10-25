@@ -1,6 +1,6 @@
 use std::str::FromStr;
-use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::Instant;
 
 use hdrhistogram::Histogram;
@@ -12,9 +12,10 @@ use uuid::Uuid;
 use ledgce_application::model::{
     CreateAccountRequest, InitOpeningBalanceRequest, PostTransferRequest,
 };
-use ledgce_application::{db, AccountService, ReconciliationService, TransferService};
+use ledgce_application::{AccountService, ReconciliationService, TransferService, db};
 
 #[tokio::main]
+#[allow(clippy::float_arithmetic)]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     dotenvy::dotenv().ok();
 
@@ -23,9 +24,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("  Double-Entry Atomic Invariants & Idempotency Stress Test");
     println!("============================================================");
 
-    let db_url = std::env::var("DATABASE_URL").unwrap_or_else(|_| {
-        "postgres://ledgce:ledgce_local_dev@127.0.0.1:5433/ledgce".to_string()
-    });
+    let db_url = std::env::var("DATABASE_URL")
+        .unwrap_or_else(|_| "postgres://ledgce:ledgce_local_dev@127.0.0.1:5433/ledgce".to_string());
 
     let pool = PgPoolOptions::new()
         .max_connections(50)
@@ -38,7 +38,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let account_svc = AccountService::new(pool.clone(), transfer_svc.clone());
     let recon_svc = ReconciliationService::new(pool.clone());
 
-    let bench_batch_id = format!("{}-{}", &Uuid::now_v7().simple().to_string()[24..], rand::random::<u16>());
+    let bench_batch_id = format!(
+        "{}-{}",
+        &Uuid::now_v7().simple().to_string()[24..],
+        rand::random::<u16>()
+    );
     println!("\n[1/4] Provisioning 10 test benchmark accounts ({bench_batch_id})...");
 
     let mut account_ids = Vec::new();
@@ -79,7 +83,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let concurrency = 10;
     let transfers_per_worker = total_transfers / concurrency;
 
-    println!("\n[2/4] Executing {total_transfers} concurrent transfers across {concurrency} async workers...");
+    println!(
+        "\n[2/4] Executing {total_transfers} concurrent transfers across {concurrency} async workers..."
+    );
 
     let histogram = Arc::new(Mutex::new(
         Histogram::<u64>::new_with_bounds(1, 60_000, 3).expect("Failed to create histogram"),
@@ -110,7 +116,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     let prev_dst_idx = (prev_src_idx + 1 + (prev_j % 3)) % account_ids.len();
                     let prev_amount = Decimal::from((prev_j % 50 + 1) * 10);
                     let prev_key = format!("bench-tx-{}-{}-{}", batch_id, worker_idx, prev_j);
-                    (account_ids[prev_src_idx], account_ids[prev_dst_idx], prev_amount, prev_key)
+                    (
+                        account_ids[prev_src_idx],
+                        account_ids[prev_dst_idx],
+                        prev_amount,
+                        prev_key,
+                    )
                 } else {
                     let src_idx = (worker_idx + j) % account_ids.len();
                     let dst_idx = (src_idx + 1 + (j % 3)) % account_ids.len();
@@ -193,11 +204,26 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .run_reconciliation("benchmark_post_run_audit")
         .await?;
 
-    println!("  Status:             {}", recon_result.summary.status.to_uppercase());
-    println!("  Accounts Audited:   {}", recon_result.summary.accounts_checked);
-    println!("  Tx Audited:         {}", recon_result.summary.transactions_checked);
-    println!("  Entries Audited:    {}", recon_result.summary.entries_checked);
-    println!("  Violations:         {}", recon_result.summary.violation_count);
+    println!(
+        "  Status:             {}",
+        recon_result.summary.status.to_uppercase()
+    );
+    println!(
+        "  Accounts Audited:   {}",
+        recon_result.summary.accounts_checked
+    );
+    println!(
+        "  Tx Audited:         {}",
+        recon_result.summary.transactions_checked
+    );
+    println!(
+        "  Entries Audited:    {}",
+        recon_result.summary.entries_checked
+    );
+    println!(
+        "  Violations:         {}",
+        recon_result.summary.violation_count
+    );
 
     if recon_result.summary.status != "passed" {
         eprintln!("\nCRITICAL: Invariants violated during concurrent stress test!");
