@@ -2,6 +2,7 @@ use ledgce_application::{
     AccountService, LedgerQueryService, OutboxService, ReconciliationService, SystemService,
     TransferService,
 };
+use ledgce_observability::PrometheusHandle;
 use sqlx::PgPool;
 
 #[derive(Clone)]
@@ -15,6 +16,7 @@ pub struct AppState {
     pub system: SystemService,
     pub admin_token: String,
     pub reader_token: String,
+    pub prometheus_handle: Option<PrometheusHandle>,
 }
 
 impl AppState {
@@ -36,6 +38,12 @@ impl AppState {
             system,
             admin_token,
             reader_token,
+            prometheus_handle: None,
         }
+    }
+
+    pub fn with_prometheus(mut self, handle: Option<PrometheusHandle>) -> Self {
+        self.prometheus_handle = handle;
+        self
     }
 }

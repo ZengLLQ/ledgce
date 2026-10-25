@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   RotateCcw,
@@ -51,7 +51,7 @@ export const TransfersView: React.FC<TransfersViewProps> = ({
   const [reversingTx, setReversingTx] = useState<TransactionSummary | null>(null);
 
   // Forms
-  const [transferForm, setTransferForm] = useState<PostTransferRequest>({
+  const [transferForm, setTransferForm] = useState<PostTransferRequest>(() => ({
     source_account_id: initialSourceAccountId || '',
     destination_account_id: '',
     amount: '',
@@ -59,13 +59,13 @@ export const TransfersView: React.FC<TransfersViewProps> = ({
     reference: '',
     description: '',
     idempotency_key: `idem-${Date.now()}`,
-  });
+  }));
 
   const [reverseReason, setReverseReason] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const { showToast } = useToast();
 
-  const loadData = async (query?: string) => {
+  const loadData = useCallback(async (query?: string) => {
     try {
       setLoading(true);
       const activeSearch = query !== undefined ? query : search;
@@ -83,11 +83,11 @@ export const TransfersView: React.FC<TransfersViewProps> = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeTab, search, showToast]);
 
   useEffect(() => {
     loadData();
-  }, [activeTab]);
+  }, [loadData]);
 
   useEffect(() => {
     if (isTransferModalOpen) {

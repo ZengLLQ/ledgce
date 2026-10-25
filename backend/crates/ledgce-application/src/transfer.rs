@@ -359,6 +359,8 @@ impl TransferService {
 
         tx.commit().await.map_err(Self::map_db_error)?;
 
+        metrics::counter!("ledgce_transfers_posted_total").increment(1);
+
         let detail = self.get_transaction(tx_id).await?;
         Ok(TransferOutcome {
             transaction: detail,
@@ -817,21 +819,19 @@ impl TransferService {
 
     fn map_db_error(err: sqlx::Error) -> AppError {
         if let Some(db_err) = err.as_database_error() {
-            if let Some(code) = db_err.code() {
-                if code == "23514" {
-                    // Check violation
-                    if let Some(constraint) = db_err.constraint() {
-                        if constraint.contains("customer_balance_nonnegative")
-                            || constraint.contains("balance")
-                        {
-                            return AppError::InsufficientFundsDetectedByDatabase;
-                        }
+            match db_err.code().as_deref() {
+                Some("23514") => {
+                    let constraint = db_err.constraint().unwrap_or_default();
+                    if constraint.contains("customer_balance_nonnegative")
+                        || constraint.contains("balance")
+                    {
+                        return AppError::InsufficientFundsDetectedByDatabase;
                     }
                 }
-                if code == "23505" {
-                    // Unique constraint violation
+                Some("23505") => {
                     return AppError::Conflict(db_err.message().to_string());
                 }
+                _ => {}
             }
         }
         AppError::Database(err)

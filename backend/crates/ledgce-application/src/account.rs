@@ -58,13 +58,11 @@ impl AccountService {
         .execute(&self.pool)
         .await
         .map_err(|err| {
-            if let Some(db_err) = err.as_database_error() {
-                if db_err.code() == Some("23505".into()) {
-                    return AppError::Conflict(format!(
-                        "Account with code '{}' already exists",
-                        req.code
-                    ));
-                }
+            if err.as_database_error().and_then(|d| d.code()) == Some("23505".into()) {
+                return AppError::Conflict(format!(
+                    "Account with code '{}' already exists",
+                    req.code
+                ));
             }
             AppError::Database(err)
         })?;

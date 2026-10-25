@@ -1,4 +1,5 @@
-use metrics_exporter_prometheus::{PrometheusBuilder, PrometheusHandle};
+use metrics_exporter_prometheus::PrometheusBuilder;
+pub use metrics_exporter_prometheus::PrometheusHandle;
 use tracing_subscriber::{EnvFilter, layer::SubscriberExt, util::SubscriberInitExt};
 
 /// Initializes JSON structured logging with environment filtering.
@@ -21,6 +22,37 @@ pub fn init_tracing(service_name: &str) {
 /// Installs the Prometheus metrics exporter and returns a handle for rendering metrics.
 pub fn init_metrics() -> Result<PrometheusHandle, Box<dyn std::error::Error + Send + Sync>> {
     let handle = PrometheusBuilder::new().install_recorder()?;
+
+    metrics::describe_gauge!("ledgce_up", "Indicates if the Ledgce service is running");
+    metrics::gauge!("ledgce_up").set(1.0);
+
+    metrics::describe_counter!(
+        metrics_consts::TRANSFERS_POSTED,
+        "Total number of transfers posted"
+    );
+    metrics::describe_counter!(
+        metrics_consts::TRANSFERS_REJECTED,
+        "Total number of transfers rejected"
+    );
+    metrics::describe_counter!(
+        metrics_consts::OUTBOX_PROCESSED,
+        "Total number of outbox events processed"
+    );
+    metrics::describe_counter!(
+        metrics_consts::OUTBOX_FAILED,
+        "Total number of outbox events failed"
+    );
+    metrics::describe_counter!(
+        metrics_consts::RECONCILIATION_VIOLATIONS,
+        "Total reconciliation violations detected"
+    );
+
+    metrics::counter!(metrics_consts::TRANSFERS_POSTED).absolute(0);
+    metrics::counter!(metrics_consts::TRANSFERS_REJECTED).absolute(0);
+    metrics::counter!(metrics_consts::OUTBOX_PROCESSED).absolute(0);
+    metrics::counter!(metrics_consts::OUTBOX_FAILED).absolute(0);
+    metrics::counter!(metrics_consts::RECONCILIATION_VIOLATIONS).absolute(0);
+
     Ok(handle)
 }
 

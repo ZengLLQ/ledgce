@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   SendHorizontal,
@@ -28,7 +28,7 @@ export const OutboxView: React.FC = () => {
   const [retryingId, setRetryingId] = useState<string | null>(null);
   const { showToast } = useToast();
 
-  const loadEvents = async () => {
+  const loadEvents = useCallback(async () => {
     try {
       setLoading(true);
       const res = await api.listOutbox({
@@ -41,11 +41,11 @@ export const OutboxView: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeTab, showToast]);
 
   useEffect(() => {
     loadEvents();
-  }, [activeTab]);
+  }, [loadEvents]);
 
   const handleRetry = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();

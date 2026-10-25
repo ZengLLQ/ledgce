@@ -1,3 +1,5 @@
+#![allow(clippy::unwrap_used)]
+
 use axum::{
     Router,
     body::Body,
@@ -19,7 +21,7 @@ fn build_test_router(admin_token: &str, reader_token: &str) -> Router {
         .unwrap();
     let state = AppState::new(pool, admin_token.into(), reader_token.into());
 
-    let test_routes = Router::new()
+    Router::new()
         .route("/api/v1/health", get(|| async { "health_ok" }))
         .route(
             "/api/v1/read-data",
@@ -37,9 +39,7 @@ fn build_test_router(admin_token: &str, reader_token: &str) -> Router {
             state.clone(),
             auth_middleware,
         ))
-        .with_state(state);
-
-    test_routes
+        .with_state(state)
 }
 
 #[tokio::test]

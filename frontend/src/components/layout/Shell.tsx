@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Topbar } from './Topbar';
+import { Sidebar } from './Sidebar';
+import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import type { ViewRoute } from '../../types/api';
 
 interface ShellProps {
@@ -23,11 +25,20 @@ export const Shell: React.FC<ShellProps> = ({
   onQuickReconcile,
   children,
 }) => {
-  const isLanding = currentRoute === 'landing';
+  const isPublicRoute = [
+    'landing',
+    'platform',
+    'architecture',
+    'security',
+    'docs',
+    'login',
+  ].includes(currentRoute);
+
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   return (
-    <div className="min-h-screen text-[#FAFAFA] font-neodin antialiased relative selection:bg-white selection:text-black flex flex-col bg-transparent">
-      {/* Starlink floating transparent navigation bar */}
+    <div className="min-h-screen text-text-primary font-neodin antialiased relative selection:bg-white selection:text-black flex flex-col bg-background">
+      {/* Topbar Navigation */}
       <Topbar
         currentRoute={currentRoute}
         onRouteChange={onRouteChange}
@@ -38,64 +49,101 @@ export const Shell: React.FC<ShellProps> = ({
         onQuickReconcile={onQuickReconcile}
       />
 
-      {/* Main Content: Full-bleed for landing hero, perfectly spaced container for operations without topbar overlap */}
-      <main className={`flex-1 ${isLanding ? 'pt-20 w-full' : 'pt-24 sm:pt-28 pb-16 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8'}`}>
-        {children}
-      </main>
-
-      {/* Starlink-inspired Minimal Technical Footer (rendered on operational dashboards) */}
-      {!isLanding && (
-        <footer className="border-t border-white/[0.08] bg-[#080A0E]/80 backdrop-blur-md py-10 px-4 sm:px-8 mt-16 select-none">
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-white/50">
-            <div className="flex items-center gap-3">
-              <span className="font-mono font-bold text-sm tracking-[0.25em] text-white">
-                LEDGCE
-              </span>
-              <span className="text-white/30">/</span>
-              <span className="font-mono text-[11px] text-white/40">
-                © 2026 MISSION-CRITICAL FINANCIAL ENGINE
-              </span>
-            </div>
-
-            <div className="flex flex-wrap items-center justify-center gap-6 font-mono text-[11px] uppercase tracking-wider text-white/60">
-              <button
-                onClick={() => onRouteChange('landing')}
-                className="hover:text-white transition-colors"
-              >
-                Architecture
-              </button>
-              <button
-                onClick={() => onRouteChange('overview')}
-                className="hover:text-white transition-colors"
-              >
-                Overview
-              </button>
-              <button
-                onClick={() => onRouteChange('reconciliation')}
-                className="hover:text-white transition-colors"
-              >
-                Invariant Audit
-              </button>
-              <a
-                href="http://127.0.0.1:8080/swagger-ui"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-white transition-colors"
-              >
-                Swagger Docs
-              </a>
-              <a
-                href="http://127.0.0.1:8080/metrics"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-white transition-colors"
-              >
-                Prometheus Metrics
-              </a>
-            </div>
+      {isPublicRoute ? (
+        /* Full-width / container public layout */
+        <main className={`flex-1 ${currentRoute === 'landing' ? 'pt-20 w-full' : 'pt-28 pb-16 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8'}`}>
+          {children}
+        </main>
+      ) : (
+        /* Operational Workspace Layout with Collapsible Sidebar */
+        <div className="pt-20 flex-1 flex w-full">
+          {/* Desktop Collapsible Sidebar */}
+          <div
+            className={`hidden lg:block transition-all duration-200 shrink-0 ${
+              sidebarCollapsed ? 'w-0 overflow-hidden' : 'w-64'
+            }`}
+          >
+            <Sidebar
+              currentRoute={currentRoute}
+              onRouteChange={onRouteChange}
+              isCollapsed={sidebarCollapsed}
+            />
           </div>
-        </footer>
+
+          {/* Main Operational Stage */}
+          <div className="flex-1 min-w-0 flex flex-col">
+            {/* Operational Utility Bar with Collapse Toggle & Breadcrumbs */}
+            <div className="h-12 border-b border-border bg-surface px-4 sm:px-6 flex items-center justify-between text-xs font-mono text-text-muted">
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                  className="hidden lg:flex items-center gap-1.5 p-1 rounded hover:bg-surface-raised hover:text-white transition-colors text-text-muted"
+                  title={sidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+                >
+                  {sidebarCollapsed ? (
+                    <PanelLeftOpen className="w-4 h-4" />
+                  ) : (
+                    <PanelLeftClose className="w-4 h-4" />
+                  )}
+                </button>
+                <div className="flex items-center gap-2 text-[11px]">
+                  <span className="text-text-muted">WORKSPACE</span>
+                  <span>/</span>
+                  <span className="text-white uppercase font-bold tracking-wider font-sans">
+                    {currentRoute.replace('-', ' ')}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 text-[10px]">
+                <span className="hidden sm:inline">DATABASE: 127.0.0.1:5433</span>
+                <span>·</span>
+                <span className="text-white font-bold">DOUBLE-ENTRY INVARIANT: OK</span>
+              </div>
+            </div>
+
+            <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full">
+              {children}
+            </main>
+          </div>
+        </div>
       )}
+
+      {/* Minimal Monochromatic Footer */}
+      <footer className="border-t border-border bg-surface py-8 px-4 sm:px-8 select-none font-mono text-xs text-text-muted">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <span className="font-sans font-bold text-sm tracking-widest text-white uppercase">
+              LEDGCE
+            </span>
+            <span>·</span>
+            <span>Financial infrastructure, engineered for trust.</span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-6 text-[11px] uppercase text-text-secondary">
+            <button type="button" onClick={() => onRouteChange('platform')} className="hover:text-white transition-colors">
+              Platform
+            </button>
+            <button type="button" onClick={() => onRouteChange('architecture')} className="hover:text-white transition-colors">
+              Architecture
+            </button>
+            <button type="button" onClick={() => onRouteChange('security')} className="hover:text-white transition-colors">
+              Security
+            </button>
+            <button type="button" onClick={() => onRouteChange('docs')} className="hover:text-white transition-colors">
+              Docs
+            </button>
+            <button type="button" onClick={() => onRouteChange('overview')} className="hover:text-white transition-colors">
+              Dashboard
+            </button>
+          </div>
+
+          <div>
+            © 2026 Ledgce. Open source financial ledger.
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   ShieldCheck,
@@ -25,7 +25,7 @@ export const ReconciliationView: React.FC = () => {
   const [inspectModalOpen, setInspectModalOpen] = useState(false);
   const { showToast } = useToast();
 
-  const loadRuns = async () => {
+  const loadRuns = useCallback(async () => {
     try {
       setLoading(true);
       const res = await api.listReconciliationRuns();
@@ -35,11 +35,11 @@ export const ReconciliationView: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [showToast]);
 
   useEffect(() => {
     loadRuns();
-  }, []);
+  }, [loadRuns]);
 
   const handleRunReconciliation = async () => {
     try {

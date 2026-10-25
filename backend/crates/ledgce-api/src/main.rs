@@ -54,8 +54,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         tracing::warn!(error = %e, "Database migration check produced an error or already completed");
     }
 
-    // 6. Application state
-    let state = AppState::new(pool, admin_token, reader_token);
+    // 6. Observability metrics & Application state
+    let prometheus_handle = ledgce_observability::init_metrics().ok();
+    if prometheus_handle.is_some() {
+        tracing::info!("Prometheus metrics recorder initialized");
+    }
+
+    let state = AppState::new(pool, admin_token, reader_token).with_prometheus(prometheus_handle);
 
     // 7. CORS configuration
     let cors = if cors_origins_env == "*" {
@@ -91,8 +96,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         auth::auth_middleware,
     ));
 
-    // 10. Combine root application
+    // 10. Combine root application with root endpoints (health, ready, metrics)
     let app = Router::new()
+        .route("/health", axum::routing::get(routes::health::live_health))
+        .route("/ready", axum::routing::get(routes::health::ready_check))
+        .route("/metrics", axum::routing::get(metrics_handler))
         .merge(swagger)
         .nest("/api/v1", v1_router)
         .layer(cors)
@@ -118,4 +126,22 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 async fn shutdown_signal() {
     let _ = tokio::signal::ctrl_c().await;
     tracing::info!("Shutdown signal received. Commencing graceful termination...");
+}
+
+async fn metrics_handler(
+    axum::extract::State(state): axum::extract::State<AppState>,
+) -> impl axum::response::IntoResponse {
+    let output = state
+        .prometheus_handle
+        .as_ref()
+        .map(|h| h.render())
+        .unwrap_or_else(|| "# Metrics recorder not installed\n".to_string());
+
+    axum::response::Response::builder()
+        .header(
+            axum::http::header::CONTENT_TYPE,
+            "text/plain; version=0.0.4; charset=utf-8",
+        )
+        .body(axum::body::Body::from(output))
+        .unwrap_or_default()
 }

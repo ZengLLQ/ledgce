@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Wallet,
@@ -34,7 +34,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
   const [reconciling, setReconciling] = useState(false);
   const { showToast } = useToast();
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       setLoading(true);
       const [overviewData, txData] = await Promise.all([
@@ -48,11 +48,11 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [showToast]);
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [loadData]);
 
   const handleRunReconciliation = async () => {
     try {

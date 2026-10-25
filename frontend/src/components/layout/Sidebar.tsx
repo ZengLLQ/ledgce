@@ -10,6 +10,10 @@ import {
   Layers,
   FileCode2,
   Cpu,
+  Shield,
+  Key,
+  Settings,
+  History,
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import type { ViewRoute } from '../../types/api';
@@ -25,21 +29,47 @@ interface NavItem {
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   badge?: string;
-  group?: 'explore' | 'operations' | 'platform';
+  group?: 'public' | 'operations' | 'platform';
 }
 
 const NAV_ITEMS: NavItem[] = [
+  // Public & Architecture
   {
     id: 'landing',
-    label: 'Architecture & Story',
+    label: 'Overview & Story',
     icon: Layers,
-    group: 'explore',
+    group: 'public',
   },
   {
+    id: 'platform',
+    label: 'Platform Engine',
+    icon: Cpu,
+    group: 'public',
+  },
+  {
+    id: 'architecture',
+    label: 'Architecture & C4',
+    icon: FileCode2,
+    group: 'public',
+  },
+  {
+    id: 'security',
+    label: 'Security & Threats',
+    icon: Shield,
+    group: 'public',
+  },
+  {
+    id: 'docs',
+    label: 'API Contracts',
+    icon: BookOpen,
+    group: 'public',
+  },
+  // Operational Workspace
+  {
     id: 'overview',
-    label: 'Ledger Overview',
+    label: 'Ledger Dashboard',
     icon: LayoutDashboard,
-    group: 'explore',
+    group: 'operations',
   },
   {
     id: 'accounts',
@@ -49,8 +79,14 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     id: 'transfers',
-    label: 'Transfers & Postings',
+    label: 'Transfer Postings',
     icon: ArrowLeftRight,
+    group: 'operations',
+  },
+  {
+    id: 'transactions',
+    label: 'Transactions History',
+    icon: History,
     group: 'operations',
   },
   {
@@ -59,6 +95,7 @@ const NAV_ITEMS: NavItem[] = [
     icon: BookOpen,
     group: 'operations',
   },
+  // Platform & Invariants
   {
     id: 'reconciliation',
     label: 'Reconciliation Audit',
@@ -73,8 +110,20 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     id: 'system-health',
-    label: 'System Health & Chaos',
+    label: 'Observability & Chaos',
     icon: Activity,
+    group: 'platform',
+  },
+  {
+    id: 'settings',
+    label: 'Settings & Config',
+    icon: Settings,
+    group: 'platform',
+  },
+  {
+    id: 'login',
+    label: 'Authorization Portal',
+    icon: Key,
     group: 'platform',
   },
 ];
@@ -84,37 +133,37 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onRouteChange,
 }) => {
   return (
-    <aside className="w-64 bg-[#0B0E17] border-r border-white/[0.08] flex flex-col justify-between shrink-0 min-h-screen select-none">
+    <aside className="w-64 bg-surface border-r border-border flex flex-col justify-between shrink-0 min-h-screen select-none font-neodin">
       <div>
         {/* Brand Header */}
-        <div className="h-16 flex items-center gap-3 px-5 border-b border-white/[0.08] bg-[#111522]/30">
-          <div className="w-8 h-8 rounded-md bg-gradient-to-br from-[#526CFF] to-[#7588FF] flex items-center justify-center shadow-accent">
-            <Cpu className="w-4 h-4 text-white" />
+        <div className="h-16 flex items-center gap-3 px-5 border-b border-border bg-background">
+          <div className="w-7 h-7 rounded bg-white flex items-center justify-center text-black font-bold font-sans text-xs">
+            L
           </div>
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-sm tracking-widest text-[#F4F6FC] uppercase font-mono">
+              <span className="font-bold text-sm tracking-widest text-white uppercase font-sans">
                 LEDGCE
               </span>
-              <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-white/10 text-[#9BA5BC]">
+              <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-surface-raised border border-border text-text-muted">
                 v1.0
               </span>
             </div>
-            <span className="text-[10px] text-[#9BA5BC] tracking-tight">
-              Autonomous Double-Entry Core
+            <span className="text-[10px] text-text-muted tracking-tight font-mono">
+              Double-Entry Financial Core
             </span>
           </div>
         </div>
 
         {/* Navigation Sections */}
         <div className="py-4 px-3 space-y-6">
-          {/* Group: Core */}
+          {/* Group: Public & Architecture */}
           <div>
-            <div className="px-3 mb-2 text-[10px] font-semibold text-[#9BA5BC]/70 uppercase tracking-wider">
-              Core Overview
+            <div className="px-3 mb-2 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">
+              Public &amp; Architecture
             </div>
-            <nav className="space-y-1">
-              {NAV_ITEMS.filter((item) => item.group === 'explore').map((item) => {
+            <nav className="space-y-0.5">
+              {NAV_ITEMS.filter((item) => item.group === 'public').map((item) => {
                 const Icon = item.icon;
                 const isActive = currentRoute === item.id;
                 return (
@@ -122,21 +171,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     key={item.id}
                     onClick={() => onRouteChange(item.id)}
                     className={clsx(
-                      'w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-medium transition-all duration-150 text-left group',
+                      'w-full flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150 text-left group',
                       isActive
-                        ? 'bg-[#171C2C] text-[#F4F6FC] font-semibold border border-white/10 shadow-sm'
-                        : 'text-[#9BA5BC] hover:text-[#F4F6FC] hover:bg-white/[0.04]'
+                        ? 'bg-surface-raised text-white font-semibold border border-border-strong'
+                        : 'text-text-secondary hover:text-white hover:bg-surface-hover'
                     )}
                   >
                     <Icon
                       className={clsx(
-                        'w-4 h-4 transition-colors',
-                        isActive ? 'text-[#526CFF]' : 'text-[#9BA5BC] group-hover:text-[#F4F6FC]'
+                        'w-3.5 h-3.5 transition-colors',
+                        isActive ? 'text-white' : 'text-text-muted group-hover:text-white'
                       )}
                     />
                     <span className="flex-1 truncate">{item.label}</span>
                     {isActive && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#526CFF] shrink-0" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-white shrink-0" />
                     )}
                   </button>
                 );
@@ -146,10 +195,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           {/* Group: Operations */}
           <div>
-            <div className="px-3 mb-2 text-[10px] font-semibold text-[#9BA5BC]/70 uppercase tracking-wider">
+            <div className="px-3 mb-2 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">
               Ledger Operations
             </div>
-            <nav className="space-y-1">
+            <nav className="space-y-0.5">
               {NAV_ITEMS.filter((item) => item.group === 'operations').map((item) => {
                 const Icon = item.icon;
                 const isActive = currentRoute === item.id;
@@ -158,21 +207,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     key={item.id}
                     onClick={() => onRouteChange(item.id)}
                     className={clsx(
-                      'w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-medium transition-all duration-150 text-left group',
+                      'w-full flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150 text-left group',
                       isActive
-                        ? 'bg-[#171C2C] text-[#F4F6FC] font-semibold border border-white/10 shadow-sm'
-                        : 'text-[#9BA5BC] hover:text-[#F4F6FC] hover:bg-white/[0.04]'
+                        ? 'bg-surface-raised text-white font-semibold border border-border-strong'
+                        : 'text-text-secondary hover:text-white hover:bg-surface-hover'
                     )}
                   >
                     <Icon
                       className={clsx(
-                        'w-4 h-4 transition-colors',
-                        isActive ? 'text-[#526CFF]' : 'text-[#9BA5BC] group-hover:text-[#F4F6FC]'
+                        'w-3.5 h-3.5 transition-colors',
+                        isActive ? 'text-white' : 'text-text-muted group-hover:text-white'
                       )}
                     />
                     <span className="flex-1 truncate">{item.label}</span>
                     {isActive && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#526CFF] shrink-0" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-white shrink-0" />
                     )}
                   </button>
                 );
@@ -182,10 +231,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           {/* Group: Platform & Integrity */}
           <div>
-            <div className="px-3 mb-2 text-[10px] font-semibold text-[#9BA5BC]/70 uppercase tracking-wider">
-              Reliability & Invariants
+            <div className="px-3 mb-2 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">
+              Reliability &amp; Infrastructure
             </div>
-            <nav className="space-y-1">
+            <nav className="space-y-0.5">
               {NAV_ITEMS.filter((item) => item.group === 'platform').map((item) => {
                 const Icon = item.icon;
                 const isActive = currentRoute === item.id;
@@ -194,21 +243,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     key={item.id}
                     onClick={() => onRouteChange(item.id)}
                     className={clsx(
-                      'w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-medium transition-all duration-150 text-left group',
+                      'w-full flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150 text-left group',
                       isActive
-                        ? 'bg-[#171C2C] text-[#F4F6FC] font-semibold border border-white/10 shadow-sm'
-                        : 'text-[#9BA5BC] hover:text-[#F4F6FC] hover:bg-white/[0.04]'
+                        ? 'bg-surface-raised text-white font-semibold border border-border-strong'
+                        : 'text-text-secondary hover:text-white hover:bg-surface-hover'
                     )}
                   >
                     <Icon
                       className={clsx(
-                        'w-4 h-4 transition-colors',
-                        isActive ? 'text-[#526CFF]' : 'text-[#9BA5BC] group-hover:text-[#F4F6FC]'
+                        'w-3.5 h-3.5 transition-colors',
+                        isActive ? 'text-white' : 'text-text-muted group-hover:text-white'
                       )}
                     />
                     <span className="flex-1 truncate">{item.label}</span>
                     {isActive && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#526CFF] shrink-0" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-white shrink-0" />
                     )}
                   </button>
                 );
@@ -219,30 +268,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       {/* Footer Info */}
-      <div className="p-4 border-t border-white/[0.08] bg-[#111522]/40 text-xs text-[#9BA5BC]">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-[10px] uppercase font-mono tracking-wider text-[#9BA5BC]">
+      <div className="p-4 border-t border-border bg-background text-xs font-mono text-text-muted">
+        <div className="flex items-center justify-between mb-1.5">
+          <span className="text-[10px] uppercase font-bold text-text-muted">
             Ledger Core
           </span>
-          <span className="text-[10px] font-mono text-[#35D6A0] flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#35D6A0]" />
-            ONLINE
+          <span className="text-[10px] text-white flex items-center gap-1 font-bold">
+            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+            SYNCHRONIZED
           </span>
         </div>
-        <p className="text-[11px] leading-relaxed text-[#9BA5BC]/80">
-          PostgreSQL 16 · Rust Backend
+        <p className="text-[11px] text-text-secondary">
+          PostgreSQL 17 · Rust 1.85+
         </p>
-        <div className="mt-3 pt-2 border-t border-white/[0.04] flex items-center justify-between text-[10px]">
-          <span className="text-[#5D6882]">Atomic Invariants</span>
-          <a
-            href="https://github.com"
-            target="_blank"
-            rel="noreferrer"
-            className="flex items-center gap-1 text-[#7588FF] hover:underline"
-          >
-            <FileCode2 className="w-3 h-3" />
-            <span>Docs</span>
-          </a>
+        <div className="mt-2 pt-2 border-t border-border flex items-center justify-between text-[10px]">
+          <span className="text-text-muted">Σ debits = Σ credits</span>
+          <span className="text-white font-bold">0.00 DRIFT</span>
         </div>
       </div>
     </aside>

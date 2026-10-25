@@ -1,6 +1,6 @@
 use axum::{
     Json,
-    extract::{Query, State},
+    extract::{Path, Query, State},
 };
 use ledgce_application::model::{EntryFilter, EntryView, Page};
 use serde::Deserialize;
@@ -61,6 +61,62 @@ pub async fn list_entries(
     Query(query): Query<EntryQuery>,
 ) -> Result<Json<Page<EntryView>>, ApiError> {
     let filter = EntryFilter::from(query);
+    let page = state.queries.list_entries(filter).await?;
+    Ok(Json(page))
+}
+
+#[utoipa::path(
+    get,
+    path = "/api/v1/ledger/entries/{id}",
+    tag = "Ledger",
+    security(
+        ("bearer_auth" = [])
+    ),
+    params(
+        ("id" = Uuid, Path, description = "Journal Entry UUID")
+    ),
+    responses(
+        (status = 200, description = "Journal entry details", body = EntryView),
+        (status = 401, description = "Unauthorized"),
+        (status = 404, description = "Journal entry not found")
+    )
+)]
+pub async fn get_entry(
+    State(state): State<AppState>,
+    Path(id): Path<Uuid>,
+) -> Result<Json<EntryView>, ApiError> {
+    let entry = state.queries.get_entry(id).await?.ok_or_else(|| {
+        ApiError(ledgce_application::AppError::NotFound(format!(
+            "Journal entry {} not found",
+            id
+        )))
+    })?;
+    Ok(Json(entry))
+}
+
+#[utoipa::path(
+    get,
+    path = "/api/v1/ledger/accounts/{account_id}/entries",
+    tag = "Ledger",
+    security(
+        ("bearer_auth" = [])
+    ),
+    params(
+        ("account_id" = Uuid, Path, description = "Account UUID"),
+        EntryQuery
+    ),
+    responses(
+        (status = 200, description = "Account-scoped journal entries", body = Page<EntryView>),
+        (status = 401, description = "Unauthorized")
+    )
+)]
+pub async fn list_account_entries(
+    State(state): State<AppState>,
+    Path(account_id): Path<Uuid>,
+    Query(query): Query<EntryQuery>,
+) -> Result<Json<Page<EntryView>>, ApiError> {
+    let mut filter = EntryFilter::from(query);
+    filter.account_id = Some(account_id);
     let page = state.queries.list_entries(filter).await?;
     Ok(Json(page))
 }

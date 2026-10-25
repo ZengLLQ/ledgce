@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Plus,
@@ -59,7 +59,7 @@ export const AccountsView: React.FC<AccountsViewProps> = ({ onInitiateTransferFr
   const [submitting, setSubmitting] = useState(false);
   const { showToast } = useToast();
 
-  const loadAccounts = async (query?: string) => {
+  const loadAccounts = useCallback(async (query?: string) => {
     try {
       setLoading(true);
       const activeSearch = query !== undefined ? query : search;
@@ -74,11 +74,11 @@ export const AccountsView: React.FC<AccountsViewProps> = ({ onInitiateTransferFr
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeTab, currencyFilter, search, showToast]);
 
   useEffect(() => {
     loadAccounts();
-  }, [activeTab, currencyFilter]);
+  }, [loadAccounts]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();

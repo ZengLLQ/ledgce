@@ -10,6 +10,7 @@ axum = "0.8"
 dotenvy = "0.15"
 ledgce-application = { path = "../ledgce-application" }
 ledgce-domain = { path = "../ledgce-domain" }
+ledgce-observability = { path = "../ledgce-observability" }
 rust_decimal = { version = "1.43.0", features = ["serde-str"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"

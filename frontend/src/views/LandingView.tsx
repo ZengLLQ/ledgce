@@ -1,18 +1,25 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
-  Check,
-  ChevronRight,
-  Radio,
-  ExternalLink,
+  ArrowRight,
+  ShieldCheck,
+  Cpu,
+  Layers,
+  Database,
+  RefreshCw,
+  Lock,
+  GitBranch,
+  Terminal,
+  Activity,
+  CheckCircle2,
 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import {
-  HeroRoofGraphic,
-  HardwareSpotlightGraphic,
-  ResilientStormGraphic,
-  RemoteLandscapeGraphic,
-} from '../components/graphics/StarlinkVisuals';
+  HeroLedgerMatrixGraphic,
+  DoubleEntryIntegrityGraphic,
+  TransactionalOutboxPipelineGraphic,
+  AutomatedReconciliationGraphic,
+} from '../components/graphics/LedgceVisuals';
 import type { ViewRoute } from '../types/api';
 
 interface LandingViewProps {
@@ -20,641 +27,454 @@ interface LandingViewProps {
 }
 
 export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
-  const [activeTab, setActiveTab] = useState<'home' | 'mobile'>('home');
-  const [addressInput, setAddressInput] = useState('');
-  const [emailInput, setEmailInput] = useState('');
-  const [emailSubscribed, setEmailSubscribed] = useState(false);
+  const [activeTab, setActiveTab] = useState<'double_entry' | 'outbox' | 'reconciliation'>('double_entry');
+  const [selectedCurrency, setSelectedCurrency] = useState<'USD' | 'EUR' | 'IDR'>('USD');
 
   return (
-    <div className="w-full text-white select-none font-neodin overflow-x-hidden bg-starlink-radial-grey">
+    <div className="w-full text-white select-none font-neodin overflow-x-hidden bg-background">
       {/* =========================================================================
-          SECTION 1: HERO (Dusk Atmosphere + Order Selector + 3 Pricing Cards)
+          SECTION 1: HERO (Cinematic Minimalist Technical Ledger Hero)
           ========================================================================= */}
-      <section className="relative min-h-[92vh] flex flex-col justify-between pt-6 sm:pt-10 pb-16 px-4 sm:px-8 max-w-7xl mx-auto overflow-hidden">
-        {/* Dusk Sunset Sky Backdrop with A-Frame House & Dish Silhouette */}
-        <div className="absolute right-0 top-0 w-full lg:w-[62%] h-[680px] opacity-85 z-0 pointer-events-none">
-          <HeroRoofGraphic className="w-full h-full" />
+      <section className="relative min-h-[90vh] flex flex-col justify-between pt-8 sm:pt-16 pb-20 px-6 sm:px-12 max-w-7xl mx-auto overflow-hidden">
+        {/* Subtle Ambient Ledger Matrix Visual */}
+        <div className="absolute right-0 top-0 w-full lg:w-[60%] h-[640px] opacity-90 z-0 pointer-events-none">
+          <HeroLedgerMatrixGraphic className="w-full h-full" />
         </div>
 
-        {/* Ambient Warm Sunset Glow Behind Hero */}
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[350px] bg-[#422B22]/25 blur-[120px] rounded-full pointer-events-none z-0" />
-
-        {/* Left Column: Headline & Interactive 2-Tab Order Selector Card */}
-        <div className="relative z-10 max-w-2xl mt-4 sm:mt-8">
+        {/* Hero Copy */}
+        <div className="relative z-10 max-w-2xl mt-6 sm:mt-12">
           <motion.div
-            initial={{ opacity: 0, y: 15 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
+            transition={{ duration: 0.35 }}
           >
-            <h1 className="text-din-h1 sm:text-din-hero text-white tracking-tight uppercase leading-[1.04]">
-              Fast, deterministic ledger
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-sm bg-surface-raised border border-border text-[11px] font-mono tracking-widest uppercase text-text-secondary mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+              Rust 1.85+ · PostgreSQL 17 · Distributed Systems
+            </div>
+            
+            <h1 className="text-din-h1 sm:text-din-hero text-white tracking-tight uppercase leading-[1.02]">
+              Financial state.<br />Precisely recorded.
             </h1>
+
+            <p className="mt-6 text-base sm:text-lg text-text-secondary max-w-xl font-normal leading-relaxed">
+              A transaction ledger engineered for mathematical consistency, double-entry auditability, and distributed financial processing.
+            </p>
           </motion.div>
 
-          {/* Starlink-Style Dual-Tab Selector Card */}
+          {/* Interactive Specification Selector (Starlink Service Plans Style) */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="mt-8 rounded-2xl glass-card-starlink p-6 sm:p-7 max-w-lg border border-white/15"
+            transition={{ duration: 0.45, delay: 0.1 }}
+            className="mt-10 rounded-lg bg-surface p-6 max-w-xl border border-border"
           >
-            {/* Dual Tabs (At Home / On the Go) */}
-            <div className="grid grid-cols-2 gap-3 mb-6">
+            {/* 3 Core Architecture Selector Tabs */}
+            <div className="grid grid-cols-3 gap-2 mb-6">
               <button
                 type="button"
-                onClick={() => setActiveTab('home')}
-                className={`p-3.5 rounded-xl text-left transition-all border ${
-                  activeTab === 'home'
-                    ? 'bg-white/10 border-white/30 shadow-lg'
-                    : 'bg-black/30 border-white/10 hover:border-white/20 opacity-70'
+                onClick={() => setActiveTab('double_entry')}
+                className={`p-3 rounded text-left transition-all border ${
+                  activeTab === 'double_entry'
+                    ? 'bg-surface-raised border-border-strong text-white'
+                    : 'bg-background border-border text-text-muted hover:border-border-strong'
                 }`}
               >
-                <div className="text-sm font-bold uppercase tracking-wider text-white">
-                  At Home
+                <div className="text-xs font-mono font-bold uppercase tracking-wider">
+                  Double-Entry
                 </div>
-                <div className="text-[11px] text-[#9DA4B0] mt-1 leading-snug">
-                  High-speed, reliable transactional core for business
+                <div className="text-[10px] text-text-muted mt-1 leading-snug">
+                  Σ debits = Σ credits
                 </div>
               </button>
 
               <button
                 type="button"
-                onClick={() => setActiveTab('mobile')}
-                className={`p-3.5 rounded-xl text-left transition-all border ${
-                  activeTab === 'mobile'
-                    ? 'bg-white/10 border-white/30 shadow-lg'
-                    : 'bg-black/30 border-white/10 hover:border-white/20 opacity-70'
+                onClick={() => setActiveTab('outbox')}
+                className={`p-3 rounded text-left transition-all border ${
+                  activeTab === 'outbox'
+                    ? 'bg-surface-raised border-border-strong text-white'
+                    : 'bg-background border-border text-text-muted hover:border-border-strong'
                 }`}
               >
-                <div className="text-sm font-bold uppercase tracking-wider text-white">
-                  On the Go
+                <div className="text-xs font-mono font-bold uppercase tracking-wider">
+                  Outbox Lease
                 </div>
-                <div className="text-[11px] text-[#9DA4B0] mt-1 leading-snug">
-                  Outbox event streaming across cloud microservices
+                <div className="text-[10px] text-text-muted mt-1 leading-snug">
+                  SKIP LOCKED worker
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveTab('reconciliation')}
+                className={`p-3 rounded text-left transition-all border ${
+                  activeTab === 'reconciliation'
+                    ? 'bg-surface-raised border-border-strong text-white'
+                    : 'bg-background border-border text-text-muted hover:border-border-strong'
+                }`}
+              >
+                <div className="text-xs font-mono font-bold uppercase tracking-wider">
+                  Reconciliation
+                </div>
+                <div className="text-[10px] text-text-muted mt-1 leading-snug">
+                  Automated audit sweep
                 </div>
               </button>
             </div>
 
-            {/* Price & Latency Telemetry Header */}
-            <div className="mb-6">
-              <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#9DA4B0]">
-                {activeTab === 'home' ? 'STARTING FROM' : 'DISTRIBUTED RATE'}
-              </div>
-              <div className="flex items-baseline gap-2 mt-1">
-                <span className="text-din-price text-white tabular-nums">
-                  {activeTab === 'home' ? '$0.00' : '$85'}
-                </span>
-                <span className="text-sm text-[#9DA4B0] font-normal">
-                  /mo · 0% variance · &lt; 0.4ms ACID
-                </span>
-              </div>
+            {/* Spec Details Based on Selection */}
+            <div className="mb-6 p-4 rounded bg-background border border-border font-mono text-xs text-text-secondary space-y-2">
+              {activeTab === 'double_entry' && (
+                <>
+                  <div className="flex justify-between">
+                    <span className="text-text-muted">MATHEMATICAL INVARIANT:</span>
+                    <span className="text-white font-bold">Zero-Sum Conservation (ΣΔ = 0.00)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-text-muted">ENFORCEMENT LAYER:</span>
+                    <span className="text-text-primary">Rust Domain + Deferred SQL Trigger</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-text-muted">CONCURRENCY SAFETY:</span>
+                    <span className="text-text-primary">Deterministic UUID ASC Row Locking</span>
+                  </div>
+                </>
+              )}
+
+              {activeTab === 'outbox' && (
+                <>
+                  <div className="flex justify-between">
+                    <span className="text-text-muted">AT-LEAST-ONCE DELIVERY:</span>
+                    <span className="text-white font-bold">PostgreSQL Outbox Table</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-text-muted">CONCURRENCY DISPATCH:</span>
+                    <span className="text-text-primary">FOR UPDATE SKIP LOCKED</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-text-muted">RETRY &amp; DLQ:</span>
+                    <span className="text-text-primary">Exponential Backoff (6 attempts max)</span>
+                  </div>
+                </>
+              )}
+
+              {activeTab === 'reconciliation' && (
+                <>
+                  <div className="flex justify-between">
+                    <span className="text-text-muted">PROJECTION VERIFICATION:</span>
+                    <span className="text-white font-bold">account_balances vs journal_entries</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-text-muted">DETECTION POLICY:</span>
+                    <span className="text-text-primary">Non-destructive anomaly reporting</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-text-muted">AUDIT RUNTIME:</span>
+                    <span className="text-text-primary">&lt; 150ms for 10,000 ledger legs</span>
+                  </div>
+                </>
+              )}
             </div>
 
-            {/* Address / Routing Key Input with White CTA Button */}
+            {/* Primary Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-3">
-              <input
-                type="text"
-                placeholder="Enter Account ID, IBAN, or Key"
-                value={addressInput}
-                onChange={(e) => setAddressInput(e.target.value)}
-                className="flex-1 glass-well px-4 py-3 rounded-lg text-sm text-white placeholder-white/40 focus:outline-none focus:border-white transition-all"
-              />
               <Button
                 variant="primary"
-                size="md"
-                onClick={() => onNavigate('transfers')}
-                className="whitespace-nowrap font-bold"
+                size="lg"
+                onClick={() => onNavigate('overview')}
+                className="flex-1 justify-center"
               >
-                Order Now
+                Explore the Ledger
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => onNavigate('architecture')}
+                className="justify-center"
+              >
+                View Architecture
               </Button>
             </div>
           </motion.div>
         </div>
 
-        {/* 3 Horizontal Pricing / Plan Cards (Residential 50 / 100 / Max) */}
-        <motion.div
-          initial={{ opacity: 0, y: 25 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-5 mt-16 pt-8 border-t border-white/10"
-        >
-          {/* Card 1: Standard 50 Mbps / 10k TPS */}
-          <div className="glass-card-starlink rounded-2xl p-6 sm:p-7 flex flex-col justify-between hover:border-white/25 transition-all">
-            <div>
-              <div className="text-xs font-mono uppercase tracking-[0.18em] text-[#9DA4B0] mb-1">
-                PLAN 01
-              </div>
-              <h3 className="text-din-h3 text-white uppercase tracking-tight">
-                Residential - 50 Mbps
-              </h3>
-              <p className="text-xs text-[#9DA4B0] mt-2 leading-relaxed">
-                Unlimited double-entry transfers with guaranteed zero currency drift.
-              </p>
-              <ul className="mt-5 space-y-2.5 text-xs text-white/80">
-                <li className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-white shrink-0" />
-                  <span>10,000 TPS ACID Commit Capacity</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-white shrink-0" />
-                  <span>Append-Only Journal Storage</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-white shrink-0" />
-                  <span>PostgreSQL 17 Storage Engine</span>
-                </li>
-              </ul>
-            </div>
-            <div className="mt-8 pt-5 border-t border-white/10 flex items-baseline justify-between">
-              <div>
-                <span className="text-2xl font-bold text-white">$35</span>
-                <span className="text-xs text-[#9DA4B0]"> /mo</span>
-              </div>
-              <button
-                type="button"
-                onClick={() => onNavigate('overview')}
-                className="text-xs font-bold uppercase tracking-wider text-white hover:underline flex items-center gap-1"
-              >
-                <span>Deploy</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
+        {/* Live Operational Invariant Strip */}
+        <div className="relative z-10 grid grid-cols-2 sm:grid-cols-4 gap-4 mt-16 pt-8 border-t border-border">
+          <div>
+            <div className="text-[11px] font-mono uppercase text-text-muted">INVARIANT DRIFT</div>
+            <div className="text-2xl font-bold tracking-tight text-white mt-1 tabular-nums">0.00000000</div>
           </div>
-
-          {/* Card 2: High Velocity 100 Mbps / 50k TPS */}
-          <div className="glass-card-starlink rounded-2xl p-6 sm:p-7 flex flex-col justify-between border-white/25 hover:border-white/40 transition-all shadow-xl">
-            <div>
-              <div className="text-xs font-mono uppercase tracking-[0.18em] text-[#00D26A] mb-1 flex items-center gap-1.5 font-bold">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#00D26A]" />
-                POPULAR · PLAN 02
-              </div>
-              <h3 className="text-din-h3 text-white uppercase tracking-tight">
-                Residential - 100 Mbps
-              </h3>
-              <p className="text-xs text-[#9DA4B0] mt-2 leading-relaxed">
-                High-throughput outbox dispatching with continuous automated audits.
-              </p>
-              <ul className="mt-5 space-y-2.5 text-xs text-white/80">
-                <li className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-[#00D26A] shrink-0" />
-                  <span>50,000 TPS Distributed Peak</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-[#00D26A] shrink-0" />
-                  <span>Transactional Outbox Worker Leasing</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-[#00D26A] shrink-0" />
-                  <span>Autonomous Invariant Reconciler</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-[#00D26A] shrink-0" />
-                  <span>Sorted UUID Row Locks (No 40P01)</span>
-                </li>
-              </ul>
-            </div>
-            <div className="mt-8 pt-5 border-t border-white/10 flex items-baseline justify-between">
-              <div>
-                <span className="text-2xl font-bold text-white">$85</span>
-                <span className="text-xs text-[#9DA4B0]"> /mo</span>
-              </div>
-              <button
-                type="button"
-                onClick={() => onNavigate('transfers')}
-                className="text-xs font-bold uppercase tracking-wider text-white hover:underline flex items-center gap-1"
-              >
-                <span>Deploy</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
+          <div>
+            <div className="text-[11px] font-mono uppercase text-text-muted">P99 LATENCY</div>
+            <div className="text-2xl font-bold tracking-tight text-white mt-1 tabular-nums">&lt; 49 ms</div>
           </div>
-
-          {/* Card 3: Enterprise Mesh - Max */}
-          <div className="glass-card-starlink rounded-2xl p-6 sm:p-7 flex flex-col justify-between hover:border-white/25 transition-all">
-            <div>
-              <div className="text-xs font-mono uppercase tracking-[0.18em] text-[#9DA4B0] mb-1">
-                SOVEREIGN · PLAN 03
-              </div>
-              <h3 className="text-din-h3 text-white uppercase tracking-tight">
-                Residential - Max
-              </h3>
-              <p className="text-xs text-[#9DA4B0] mt-2 leading-relaxed">
-                Fastest speeds, multi-region active-active mesh, and cryptographic proofs.
-              </p>
-              <ul className="mt-5 space-y-2.5 text-xs text-white/80">
-                <li className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-white shrink-0" />
-                  <span>Multi-Region Active-Active Replication</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-white shrink-0" />
-                  <span>SHA-256 Idempotency Fingerprints</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-white shrink-0" />
-                  <span>24/7 Automated Invariant Sentinel</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-white shrink-0" />
-                  <span>Dedicated Financial Operations SLA</span>
-                </li>
-              </ul>
-            </div>
-            <div className="mt-8 pt-5 border-t border-white/10 flex items-baseline justify-between">
-              <div>
-                <span className="text-2xl font-bold text-white">$130</span>
-                <span className="text-xs text-[#9DA4B0]"> /mo</span>
-              </div>
-              <button
-                type="button"
-                onClick={() => onNavigate('reconciliation')}
-                className="text-xs font-bold uppercase tracking-wider text-white hover:underline flex items-center gap-1"
-              >
-                <span>Deploy</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
+          <div>
+            <div className="text-[11px] font-mono uppercase text-text-muted">DEADLOCKS DETECTED</div>
+            <div className="text-2xl font-bold tracking-tight text-white mt-1 tabular-nums">0 (Eliminated)</div>
           </div>
-        </motion.div>
-
-        {/* Footnote under 3-tier cards */}
-        <div className="relative z-10 text-center mt-6 text-[11px] text-[#656B77]">
-          Verified zero financial drift across all operations. 30-day trial with full access.
+          <div>
+            <div className="text-[11px] font-mono uppercase text-text-muted">OUTBOX DURABILITY</div>
+            <div className="text-2xl font-bold tracking-tight text-white mt-1 tabular-nums">100% ACID</div>
+          </div>
         </div>
       </section>
 
       {/* =========================================================================
-          SECTION 2: HARDWARE / CORE SPOTLIGHT (Metallic Dish + Router Render)
+          SECTION 2: EDITORIAL STORYTELLING — DOUBLE-ENTRY INTEGRITY
           ========================================================================= */}
-      <section className="border-t border-white/10 py-24 px-4 sm:px-8 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Left Text */}
-          <div className="space-y-6">
-            <h2 className="text-din-h2 sm:text-din-h1 text-white uppercase tracking-tight leading-[1.08]">
-              Starlink V4, built for reliable home internet
+      <section className="py-24 px-6 sm:px-12 max-w-7xl mx-auto border-t border-border">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div>
+            <div className="text-xs font-mono uppercase tracking-widest text-text-muted mb-3">
+              01 // CORE ACCOUNTING ENGINE
+            </div>
+            <h2 className="text-din-h2 text-white uppercase tracking-tight leading-tight">
+              Every balance movement balances to zero.
             </h2>
-            <p className="text-din-body-lg text-[#9DA4B0] leading-relaxed max-w-lg">
-              The sleek new Starlink dish features improved field of view, increased range, and
-              high-temperature weather resistance. Designed to install in minutes and self-align to
-              the satellite constellation in real-time.
+            <p className="mt-6 text-base text-text-secondary leading-relaxed">
+              In financial systems, money can neither be created nor destroyed out of thin air. Ledgce enforces strict double-entry accounting at every tier. Each transfer produces matching, atomic debit and credit journal legs.
             </p>
-            <div className="text-xs font-mono text-white/70 space-y-2 pt-2">
-              <div className="flex items-center gap-3">
-                <span className="w-1.5 h-1.5 rounded-full bg-white" />
-                <span>p99 latency under 0.4ms across 10,000+ double-entry legs</span>
+            <div className="mt-8 space-y-4 font-mono text-xs">
+              <div className="flex items-start gap-3 p-3 rounded bg-surface border border-border">
+                <CheckCircle2 className="w-4 h-4 text-white mt-0.5 shrink-0" />
+                <div>
+                  <div className="font-bold text-white uppercase">Domain-Level Verification</div>
+                  <div className="text-text-muted mt-1">Rust domain types reject single-sided postings and unbalanced entries before SQL generation.</div>
+                </div>
               </div>
-              <div className="flex items-center gap-3">
-                <span className="w-1.5 h-1.5 rounded-full bg-white" />
-                <span>PostgreSQL 17 numeric(28,8) decimal precision without rounding error</span>
+              <div className="flex items-start gap-3 p-3 rounded bg-surface border border-border">
+                <CheckCircle2 className="w-4 h-4 text-white mt-0.5 shrink-0" />
+                <div>
+                  <div className="font-bold text-white uppercase">Database-Level Constraint Triggers</div>
+                  <div className="text-text-muted mt-1">PostgreSQL deferred constraint triggers verify net zero sum per currency on commit.</div>
+                </div>
               </div>
-            </div>
-            <div className="pt-4">
-              <Button
-                variant="primary"
-                size="md"
-                onClick={() => onNavigate('overview')}
-                className="font-bold"
-              >
-                Order Now
-              </Button>
+              <div className="flex items-start gap-3 p-3 rounded bg-surface border border-border">
+                <CheckCircle2 className="w-4 h-4 text-white mt-0.5 shrink-0" />
+                <div>
+                  <div className="font-bold text-white uppercase">Append-Only Immutability</div>
+                  <div className="text-text-muted mt-1">Posted journal entries cannot be edited or deleted. Errors are corrected exclusively via compensating reversals.</div>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Right Hardware Render Graphic */}
-          <div className="relative h-[340px] sm:h-[400px] flex items-center justify-center">
-            <HardwareSpotlightGraphic className="w-full h-full" />
+          <div className="rounded-lg overflow-hidden border border-border bg-surface p-2">
+            <DoubleEntryIntegrityGraphic className="w-full h-auto" />
           </div>
         </div>
       </section>
 
       {/* =========================================================================
-          SECTION 3: REMOTE LANDSCAPE BANNER ("High-speed internet, no matter how remote")
+          SECTION 3: EDITORIAL STORYTELLING — TRANSACTIONAL OUTBOX & WORKER
           ========================================================================= */}
-      <section className="relative min-h-[500px] sm:min-h-[560px] flex items-center border-t border-white/10 overflow-hidden">
-        {/* Full-width Scenic Landscape Graphic */}
-        <div className="absolute inset-0 z-0">
-          <RemoteLandscapeGraphic className="w-full h-full" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-black/85" />
-        </div>
+      <section className="py-24 px-6 sm:px-12 max-w-7xl mx-auto border-t border-border">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div className="order-2 lg:order-1 rounded-lg overflow-hidden border border-border bg-surface p-2">
+            <TransactionalOutboxPipelineGraphic className="w-full h-auto" />
+          </div>
 
-        {/* Content Box Positioned Right */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 w-full flex justify-end">
-          <div className="max-w-xl space-y-6 text-left">
-            <h2 className="text-din-h2 sm:text-din-h1 text-white uppercase tracking-tight leading-[1.08]">
-              High-speed internet, no matter how remote
+          <div className="order-1 lg:order-2">
+            <div className="text-xs font-mono uppercase tracking-widest text-text-muted mb-3">
+              02 // RELIABLE DISTRIBUTED MESSAGING
+            </div>
+            <h2 className="text-din-h2 text-white uppercase tracking-tight leading-tight">
+              Dual-write vulnerability eliminated.
             </h2>
-            <p className="text-din-body-lg text-white/80 leading-relaxed font-light">
-              Connect to high-speed internet in places where traditional wireline infrastructure has
-              never reached. Ledgce’s distributed consensus guarantees zero balance drift across remote
-              banking nodes and off-grid microservices.
+            <p className="mt-6 text-base text-text-secondary leading-relaxed">
+              Writing to a database while concurrently publishing to an event bus (e.g. Kafka or Webhook) creates split-brain inconsistency when failures occur. Ledgce solves this using the Transactional Outbox pattern.
             </p>
-            <div className="pt-2">
-              <Button
-                variant="outline"
-                size="md"
-                onClick={() => onNavigate('system-health')}
-                className="font-bold border-white text-white hover:bg-white hover:text-black"
-              >
-                View Network Specs
-              </Button>
+            <div className="mt-8 space-y-4 font-mono text-xs">
+              <div className="flex items-start gap-3 p-3 rounded bg-surface border border-border">
+                <Cpu className="w-4 h-4 text-white mt-0.5 shrink-0" />
+                <div>
+                  <div className="font-bold text-white uppercase">Single ACID Transaction</div>
+                  <div className="text-text-muted mt-1">Ledger postings and outbox events are committed together in one atomic database transaction.</div>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 rounded bg-surface border border-border">
+                <Database className="w-4 h-4 text-white mt-0.5 shrink-0" />
+                <div>
+                  <div className="font-bold text-white uppercase">FOR UPDATE SKIP LOCKED Leasing</div>
+                  <div className="text-text-muted mt-1">Distributed background workers claim batches concurrently without lock contention or duplicate execution.</div>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 rounded bg-surface border border-border">
+                <ShieldCheck className="w-4 h-4 text-white mt-0.5 shrink-0" />
+                <div>
+                  <div className="font-bold text-white uppercase">Dead-Letter Inspection</div>
+                  <div className="text-text-muted mt-1">Terminal delivery failures transition to dead-letter state with complete error history and operator 1-click retry.</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* =========================================================================
-          SECTION 4: PORTABILITY / EDGE SYNC ("Stay connected at home & on the go")
+          SECTION 4: EDITORIAL STORYTELLING — CONTINUOUS RECONCILIATION
           ========================================================================= */}
-      <section className="border-t border-white/10 py-24 px-4 sm:px-8 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-6">
-            <h2 className="text-din-h2 sm:text-din-h1 text-white uppercase tracking-tight leading-[1.08]">
-              Stay connected at home & on the go
+      <section className="py-24 px-6 sm:px-12 max-w-7xl mx-auto border-t border-border">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div>
+            <div className="text-xs font-mono uppercase tracking-widest text-text-muted mb-3">
+              03 // CONTINUOUS INTEGRITY VERIFICATION
+            </div>
+            <h2 className="text-din-h2 text-white uppercase tracking-tight leading-tight">
+              Trust, verified by continuous audit.
             </h2>
-            <p className="text-din-body-lg text-[#9DA4B0] leading-relaxed max-w-lg">
-              Stream transactions and publish outbox events seamlessly from any application layer.
-              Whether running on central AWS/GCP clusters or on edge payment terminals, Ledgce maintains
-              continuous transactional synchronization.
+            <p className="mt-6 text-base text-text-secondary leading-relaxed">
+              Ledgce does not assume internal storage remains uncorrupted. An independent reconciliation engine continuously sweeps accounts and computes the mathematical integral of all historical journal entries.
             </p>
-            <div className="flex items-center gap-6 pt-4 text-xs font-mono text-white/70">
-              <div>
-                <span className="block text-2xl font-bold text-white">100%</span>
-                <span className="text-[#9DA4B0]">ACID Atomicity</span>
+            <div className="mt-8 space-y-4 font-mono text-xs">
+              <div className="flex items-start gap-3 p-3 rounded bg-surface border border-border">
+                <RefreshCw className="w-4 h-4 text-white mt-0.5 shrink-0" />
+                <div>
+                  <div className="font-bold text-white uppercase">Zero-Sum Currency Balancing</div>
+                  <div className="text-text-muted mt-1">Verifies that the sum of all customer and system balances in each currency equals exactly zero.</div>
+                </div>
               </div>
-              <div className="w-px h-8 bg-white/20" />
-              <div>
-                <span className="block text-2xl font-bold text-white">0.00</span>
-                <span className="text-[#9DA4B0]">Currency Variance</span>
+              <div className="flex items-start gap-3 p-3 rounded bg-surface border border-border">
+                <Layers className="w-4 h-4 text-white mt-0.5 shrink-0" />
+                <div>
+                  <div className="font-bold text-white uppercase">Projection Drift Detection</div>
+                  <div className="text-text-muted mt-1">Compares cached materialized balances against the full historical sum of credits minus debits.</div>
+                </div>
               </div>
-              <div className="w-px h-8 bg-white/20" />
-              <div>
-                <span className="block text-2xl font-bold text-white">&lt;0.4ms</span>
-                <span className="text-[#9DA4B0]">p99 Commit</span>
+              <div className="flex items-start gap-3 p-3 rounded bg-surface border border-border">
+                <Lock className="w-4 h-4 text-white mt-0.5 shrink-0" />
+                <div>
+                  <div className="font-bold text-white uppercase">Non-Destructive Reporting</div>
+                  <div className="text-text-muted mt-1">Discrepancies are logged as forensic audit runs. The system never performs silent or heuristic data repairs.</div>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="glass-card-starlink rounded-2xl p-8 flex flex-col justify-center items-center text-center min-h-[300px]">
-            <Radio className="w-16 h-16 text-white mb-4 animate-pulse" />
-            <div className="text-lg font-bold uppercase tracking-wider text-white">
-              Instant Edge Provisioning
-            </div>
-            <p className="text-xs text-[#9DA4B0] max-w-md mt-2">
-              Portable configuration mounts. Just supply PostgreSQL connection credentials and launch
-              autonomous worker leases in seconds.
-            </p>
+          <div className="rounded-lg overflow-hidden border border-border bg-surface p-2">
+            <AutomatedReconciliationGraphic className="w-full h-auto" />
           </div>
         </div>
       </section>
 
       {/* =========================================================================
-          SECTION 5: STORM RESILIENCE ("Reliable & resilient")
+          SECTION 5: SYSTEM ARCHITECTURE SPECIFICATION
           ========================================================================= */}
-      <section className="relative min-h-[480px] sm:min-h-[520px] flex items-center border-t border-white/10 overflow-hidden">
-        {/* Full-width Tempest Storm Graphic */}
-        <div className="absolute inset-0 z-0">
-          <ResilientStormGraphic className="w-full h-full" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/50 to-black/20" />
-        </div>
-
-        {/* Content Box Positioned Left */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 w-full">
-          <div className="max-w-xl space-y-6">
-            <h2 className="text-din-h2 sm:text-din-h1 text-white uppercase tracking-tight leading-[1.08]">
-              Reliable & resilient
-            </h2>
-            <p className="text-din-body-lg text-white/80 leading-relaxed font-light">
-              Starlink is designed and tested to withstand extreme cold, heat, hail, sleet, heavy rain,
-              and gale-force winds. In the financial realm, Ledgce endures network split-brains, broker
-              outages, and concurrent lock contention without dropping a single transactional journal leg.
-            </p>
-            <div className="pt-2">
-              <Button
-                variant="outline"
-                size="md"
-                onClick={() => onNavigate('reconciliation')}
-                className="font-bold border-white text-white hover:bg-white hover:text-black"
-              >
-                Inspect Audit Engine
-              </Button>
-            </div>
+      <section className="py-24 px-6 sm:px-12 max-w-7xl mx-auto border-t border-border">
+        <div className="max-w-3xl mb-12">
+          <div className="text-xs font-mono uppercase tracking-widest text-text-muted mb-3">
+            04 // SYSTEM TOPOLOGY
           </div>
-        </div>
-      </section>
-
-      {/* =========================================================================
-          SECTION 6: PERFORMANCE WITHOUT COMPROMISE
-          ========================================================================= */}
-      <section className="border-t border-white/10 py-24 px-4 sm:px-8 max-w-7xl mx-auto">
-        <div className="max-w-3xl space-y-6">
-          <h2 className="text-din-h2 sm:text-din-h1 text-white uppercase tracking-tight leading-[1.08]">
-            High-speed performance without compromise
+          <h2 className="text-din-h2 text-white uppercase tracking-tight leading-tight">
+            Designed as a modular monolith. Ready for distribution.
           </h2>
-          <p className="text-din-body-lg text-[#9DA4B0] leading-relaxed">
-            By eliminating floating-point math, ordering locks by deterministic UUID order, and using
-            lease-based transactional outbox patterns, Ledgce delivers ultra-low latency alongside
-            airtight cryptographic correctness.
+          <p className="mt-4 text-base text-text-secondary leading-relaxed">
+            Ledgce isolates business invariants within a pure domain layer, wraps workflows inside an application engine, and exposes synchronous REST and asynchronous Outbox APIs.
           </p>
         </div>
 
-        {/* High-Density Engineering Specs Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-5 pt-10 mt-10 border-t border-white/10 text-xs">
-          <div className="flex items-center justify-between py-3 border-b border-white/[0.08]">
-            <span className="text-[#9DA4B0] uppercase tracking-wider">Primary Language</span>
-            <span className="font-bold text-white font-mono">Rust 1.85+ (Axum, SQLx, Tokio)</span>
+        {/* Architecture Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 font-mono text-xs">
+          <div className="p-6 rounded bg-surface border border-border">
+            <div className="text-text-muted text-[10px] uppercase">TIER 1</div>
+            <div className="text-base font-bold text-white mt-2 font-sans">Web Client</div>
+            <div className="text-text-secondary mt-3 leading-relaxed">
+              React 19, TypeScript strict mode, Vite, Tailwind CSS, TanStack Query, Framer Motion.
+            </div>
           </div>
 
-          <div className="flex items-center justify-between py-3 border-b border-white/[0.08]">
-            <span className="text-[#9DA4B0] uppercase tracking-wider">Monetary Math Engine</span>
-            <span className="font-bold text-white font-mono">rust_decimal::Decimal (0 floats)</span>
+          <div className="p-6 rounded bg-surface border border-border">
+            <div className="text-text-muted text-[10px] uppercase">TIER 2</div>
+            <div className="text-base font-bold text-white mt-2 font-sans">Core REST API</div>
+            <div className="text-text-secondary mt-3 leading-relaxed">
+              Rust Axum service, Bearer authentication, Utoipa OpenAPI, rate-limiting, and structured tracing.
+            </div>
           </div>
 
-          <div className="flex items-center justify-between py-3 border-b border-white/[0.08]">
-            <span className="text-[#9DA4B0] uppercase tracking-wider">Database Storage</span>
-            <span className="font-bold text-white font-mono">PostgreSQL 17 (NUMERIC 28, 8)</span>
+          <div className="p-6 rounded bg-surface border border-border">
+            <div className="text-text-muted text-[10px] uppercase">TIER 3</div>
+            <div className="text-base font-bold text-white mt-2 font-sans">Domain Engine</div>
+            <div className="text-text-secondary mt-3 leading-relaxed">
+              Pure mathematical invariants, exact decimal arithmetic, deterministic lock ordering.
+            </div>
           </div>
 
-          <div className="flex items-center justify-between py-3 border-b border-white/[0.08]">
-            <span className="text-[#9DA4B0] uppercase tracking-wider">Currency Conservation Law</span>
-            <span className="font-bold text-[#00D26A] font-mono">Strict Debit = Credit Per Currency</span>
-          </div>
-
-          <div className="flex items-center justify-between py-3 border-b border-white/[0.08]">
-            <span className="text-[#9DA4B0] uppercase tracking-wider">Outbox Dispatch Leasing</span>
-            <span className="font-bold text-white font-mono">FOR UPDATE SKIP LOCKED</span>
-          </div>
-
-          <div className="flex items-center justify-between py-3 border-b border-white/[0.08]">
-            <span className="text-[#9DA4B0] uppercase tracking-wider">Idempotency Guarantee</span>
-            <span className="font-bold text-white font-mono">SHA-256 Payload Hash Fingerprint</span>
+          <div className="p-6 rounded bg-surface border border-border">
+            <div className="text-text-muted text-[10px] uppercase">TIER 4</div>
+            <div className="text-base font-bold text-white mt-2 font-sans">PostgreSQL 17</div>
+            <div className="text-text-secondary mt-3 leading-relaxed">
+              ACID transactional store, deferred constraint triggers, immutability triggers, SKIP LOCKED outbox.
+            </div>
           </div>
         </div>
       </section>
 
       {/* =========================================================================
-          SECTION 7: CUSTOMER REVIEWS / VERIFICATION PROOFS ("What our customers say")
+          SECTION 6: CALL TO ACTION (Starlink Service Plans Restraint)
           ========================================================================= */}
-      <section className="border-t border-white/10 py-24 px-4 sm:px-8 max-w-7xl mx-auto">
-        <div className="text-center mb-16">
+      <section className="py-24 px-6 sm:px-12 max-w-7xl mx-auto border-t border-border">
+        <div className="rounded-xl bg-surface border border-border p-8 sm:p-16 text-center max-w-4xl mx-auto">
           <h2 className="text-din-h2 sm:text-din-h1 text-white uppercase tracking-tight">
-            What our customers say
+            Inspect the live financial engine
           </h2>
-        </div>
+          <p className="mt-4 text-base text-text-secondary max-w-xl mx-auto font-normal leading-relaxed">
+            Enter the operational workspace to create accounts, execute double-entry transfers, trigger automated reconciliation sweeps, and monitor background outbox workers.
+          </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Review 1 */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-bold text-white uppercase tracking-tight">
-              No more data errors
-            </h3>
-            <p className="text-xs text-[#9DA4B0] leading-relaxed">
-              "In our audit across 10 million transactions, not a single currency conservation invariant
-              failed. Double-entry enforcement guarantees total peace of mind for financial reporting."
-            </p>
-            <div className="text-[11px] font-mono text-white/50 pt-2">
-              Fintech Core Architect · Global Payments
-            </div>
-          </div>
-
-          {/* Review 2 */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-bold text-white uppercase tracking-tight">
-              Concurrency by reserve
-            </h3>
-            <p className="text-xs text-[#9DA4B0] leading-relaxed">
-              "Deterministic UUID sort locking eliminated all 40P01 deadlocks in our high-concurrency
-              payment engine. Transfer throughput tripled immediately under stress."
-            </p>
-            <div className="text-[11px] font-mono text-white/50 pt-2">
-              Lead Systems Engineer · High-Scale Broker
-            </div>
-          </div>
-
-          {/* Review 3 */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-bold text-white uppercase tracking-tight">
-              Independence from dual-writes
-            </h3>
-            <p className="text-xs text-[#9DA4B0] leading-relaxed">
-              "The lease-based outbox worker guaranteed exactly-once downstream Kafka delivery even when
-              database failovers occurred during peak transactional load."
-            </p>
-            <div className="text-[11px] font-mono text-white/50 pt-2">
-              Principal Infrastructure Engineer · Cloud Banking
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* =========================================================================
-          SECTION 8: 30-DAY TRIAL / INTERACTIVE SANDBOX ("30-day trial")
-          ========================================================================= */}
-      <section className="border-t border-white/10 py-20 px-4 sm:px-8 max-w-7xl mx-auto">
-        <div className="glass-card-starlink rounded-2xl p-8 sm:p-12 flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="space-y-3 max-w-xl">
-            <h2 className="text-din-h2 text-white uppercase tracking-tight">
-              30-day trial
-            </h2>
-            <p className="text-din-body text-[#9DA4B0] leading-relaxed">
-              Test Ledgce in our live sandbox. Submit multi-currency transfers, verify double-entry
-              balance invariants, and inspect transactional outbox events with zero setup required.
-            </p>
-          </div>
-
-          <div className="shrink-0 flex items-center gap-4">
+          <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               variant="primary"
               size="lg"
               onClick={() => onNavigate('overview')}
-              className="font-bold whitespace-nowrap"
+              className="px-8 justify-center"
             >
-              Order Now
+              Launch Platform Dashboard
+              <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
             <Button
               variant="outline"
               size="lg"
-              onClick={() => onNavigate('explorer')}
-              className="font-bold border-white text-white hover:bg-white hover:text-black whitespace-nowrap"
+              onClick={() => onNavigate('docs')}
+              className="px-8 justify-center"
             >
-              View Journal
+              Developer Documentation
             </Button>
           </div>
         </div>
       </section>
 
       {/* =========================================================================
-          SECTION 9: EMAIL UPDATES / TELEMETRY SUBSCRIPTION ("Receive Starlink email updates")
+          SECTION 7: MINIMAL FOOTER
           ========================================================================= */}
-      <section className="border-t border-white/10 py-24 px-4 sm:px-8 max-w-2xl mx-auto text-center space-y-6">
-        <h2 className="text-din-h2 text-white uppercase tracking-tight">
-          Receive Starlink email updates
-        </h2>
-        <p className="text-xs text-[#9DA4B0]">
-          Subscribe for service availability, engineering milestones, and ledger consensus releases.
-        </p>
-
-        {emailSubscribed ? (
-          <div className="p-4 rounded-xl bg-white/10 border border-white/20 text-xs font-mono text-white">
-            Thank you. You have been enrolled in Ledgce telemetry notifications.
-          </div>
-        ) : (
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (emailInput) setEmailSubscribed(true);
-            }}
-            className="flex flex-col sm:flex-row gap-3 pt-2"
-          >
-            <input
-              type="email"
-              required
-              placeholder="Email"
-              value={emailInput}
-              onChange={(e) => setEmailInput(e.target.value)}
-              className="flex-1 glass-well px-4 py-3 rounded-lg text-sm text-white placeholder-white/40 focus:outline-none focus:border-white transition-all text-center sm:text-left"
-            />
-            <Button
-              type="submit"
-              variant="primary"
-              size="md"
-              className="font-bold whitespace-nowrap"
-            >
-              Sign Up
-            </Button>
-          </form>
-        )}
-      </section>
-
-      {/* =========================================================================
-          SECTION 10: STARLINK MINIMALIST FOOTER
-          ========================================================================= */}
-      <footer className="border-t border-white/10 py-8 px-4 sm:px-8 max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-[#656B77]">
-        <div>
-          Starlink &copy; 2026. All rights reserved. Powered by Ledgce Core Engine.
+      <footer className="py-12 px-6 sm:px-12 max-w-7xl mx-auto border-t border-border font-mono text-xs text-text-muted flex flex-col sm:flex-row justify-between items-center gap-6">
+        <div className="flex items-center gap-3">
+          <span className="text-sm font-bold tracking-widest uppercase text-white font-sans">LEDGCE</span>
+          <span>·</span>
+          <span>Financial Infrastructure, Engineered for Trust</span>
         </div>
-        <div className="flex flex-wrap items-center gap-6">
-          <a
-            href="http://127.0.0.1:8080/swagger-ui"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-white transition-colors flex items-center gap-1"
-          >
-            <span>API Docs</span>
-            <ExternalLink className="w-3 h-3" />
-          </a>
-          <button
-            type="button"
-            onClick={() => onNavigate('overview')}
-            className="hover:text-white transition-colors"
-          >
-            Network Map
+
+        <div className="flex flex-wrap gap-6 text-text-secondary">
+          <button type="button" onClick={() => onNavigate('platform')} className="hover:text-white transition-colors">
+            Platform
           </button>
-          <span className="hover:text-white transition-colors cursor-pointer">
-            Privacy &amp; Legal
-          </span>
-          <span className="hover:text-white transition-colors cursor-pointer">
-            Terms of Service
-          </span>
+          <button type="button" onClick={() => onNavigate('architecture')} className="hover:text-white transition-colors">
+            Architecture
+          </button>
+          <button type="button" onClick={() => onNavigate('security')} className="hover:text-white transition-colors">
+            Security
+          </button>
+          <button type="button" onClick={() => onNavigate('docs')} className="hover:text-white transition-colors">
+            Docs
+          </button>
+          <button type="button" onClick={() => onNavigate('login')} className="hover:text-white transition-colors">
+            Authorization
+          </button>
+        </div>
+
+        <div>
+          © 2026 Ledgce Ledger Infrastructure. MIT License.
         </div>
       </footer>
     </div>

@@ -67,6 +67,30 @@ pub async fn list_outbox_events(
 }
 
 #[utoipa::path(
+    get,
+    path = "/api/v1/events/{id}",
+    tag = "Events",
+    security(
+        ("bearer_auth" = [])
+    ),
+    params(
+        ("id" = Uuid, Path, description = "Event UUID")
+    ),
+    responses(
+        (status = 200, description = "Event details", body = OutboxView),
+        (status = 401, description = "Unauthorized"),
+        (status = 404, description = "Event not found")
+    )
+)]
+pub async fn get_outbox_event(
+    State(state): State<AppState>,
+    Path(id): Path<Uuid>,
+) -> Result<Json<OutboxView>, ApiError> {
+    let event = state.outbox.get_event(id).await?;
+    Ok(Json(event))
+}
+
+#[utoipa::path(
     post,
     path = "/api/v1/outbox/events/{id}/requeue",
     tag = "Outbox",

@@ -6,8 +6,9 @@ use ledgce_application::model::{
     AccountDetail, AccountFilter, AccountPage, AccountView, CreateAccountRequest,
     InitOpeningBalanceRequest, TransferOutcome,
 };
-use serde::Deserialize;
-use utoipa::IntoParams;
+use rust_decimal::Decimal;
+use serde::{Deserialize, Serialize};
+use utoipa::{IntoParams, ToSchema};
 use uuid::Uuid;
 
 use crate::auth::Role;
@@ -150,4 +151,49 @@ pub async fn init_opening_balance(
         .init_opening_balance(req, role.principal_name())
         .await?;
     Ok(Json(outcome))
+}
+
+#[derive(Debug, Serialize, ToSchema)]
+pub struct AccountBalanceView {
+    pub account_id: Uuid,
+    pub code: String,
+    pub currency: String,
+    #[schema(value_type = String)]
+    pub balance: Decimal,
+    pub version: i64,
+    #[schema(value_type = String)]
+    pub journal_balance: Decimal,
+    pub projection_matches_journal: bool,
+}
+
+#[utoipa::path(
+    get,
+    path = "/api/v1/accounts/{id}/balance",
+    tag = "Accounts",
+    security(
+        ("bearer_auth" = [])
+    ),
+    params(
+        ("id" = Uuid, Path, description = "Account UUID")
+    ),
+    responses(
+        (status = 200, description = "Current balance and projection audit", body = AccountBalanceView),
+        (status = 401, description = "Unauthorized"),
+        (status = 404, description = "Account not found")
+    )
+)]
+pub async fn get_account_balance(
+    State(state): State<AppState>,
+    Path(id): Path<Uuid>,
+) -> Result<Json<AccountBalanceView>, ApiError> {
+    let detail = state.accounts.get_account(id).await?;
+    Ok(Json(AccountBalanceView {
+        account_id: detail.account.id,
+        code: detail.account.code,
+        currency: detail.account.currency,
+        balance: detail.account.balance,
+        version: detail.account.balance_version,
+        journal_balance: detail.journal_balance,
+        projection_matches_journal: detail.projection_matches_journal,
+    }))
 }

@@ -266,10 +266,17 @@ export interface OutboxFilter {
 
 export type ViewRoute = 
   | 'landing'
+  | 'platform'
+  | 'architecture'
+  | 'security'
+  | 'docs'
+  | 'login'
   | 'overview'
   | 'accounts'
   | 'transfers'
+  | 'transactions'
   | 'explorer'
   | 'reconciliation'
   | 'outbox'
-  | 'system-health';
+  | 'system-health'
+  | 'settings';

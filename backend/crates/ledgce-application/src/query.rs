@@ -1,5 +1,6 @@
 use rust_decimal::Decimal;
 use sqlx::PgPool;
+use uuid::Uuid;
 
 use crate::error::AppError;
 use crate::model::{
@@ -83,6 +84,38 @@ impl LedgerQueryService {
             next_cursor,
             has_more,
         })
+    }
+
+    /// Fetches a single journal entry by UUID.
+    pub async fn get_entry(&self, id: Uuid) -> Result<Option<EntryView>, AppError> {
+        let entry: Option<EntryView> = sqlx::query_as(
+            r#"
+            SELECT
+                j.id,
+                j.seq,
+                j.transaction_id,
+                t.reference AS transaction_reference,
+                t.kind AS transaction_kind,
+                t.status AS transaction_status,
+                j.account_id,
+                a.code AS account_code,
+                a.name AS account_name,
+                j.currency,
+                j.debit,
+                j.credit,
+                j.memo,
+                j.posted_at
+            FROM journal_entries j
+            JOIN transactions t ON t.id = j.transaction_id
+            JOIN accounts a ON a.id = j.account_id
+            WHERE j.id = $1
+            "#,
+        )
+        .bind(id)
+        .fetch_optional(&self.pool)
+        .await?;
+
+        Ok(entry)
     }
 
     /// Queries journal entries with keyset cursor-based pagination.

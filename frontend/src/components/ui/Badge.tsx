@@ -3,7 +3,7 @@ import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  variant?: 'positive' | 'warning' | 'error' | 'info' | 'neutral' | 'accent';
+  variant?: 'positive' | 'warning' | 'error' | 'info' | 'neutral' | 'accent' | 'success' | 'outline';
   dot?: boolean;
   pulse?: boolean;
   size?: 'sm' | 'md';
@@ -26,21 +26,26 @@ export const Badge: React.FC<BadgeProps> = ({
     md: 'text-[11px] px-2.5 py-0.5 gap-2 tracking-[0.12em]',
   }[size];
 
+  // Monochromatic Starlink-inspired styling
   const variantStyles = {
-    positive: 'bg-[#00D26A]/10 text-[#00D26A] border-[#00D26A]/30',
-    warning: 'bg-[#FFAA00]/10 text-[#FFAA00] border-[#FFAA00]/30',
-    error: 'bg-[#FF453A]/10 text-[#FF453A] border-[#FF453A]/30',
-    info: 'bg-white/10 text-white border-white/20',
-    neutral: 'bg-white/5 text-white/60 border-white/10',
+    positive: 'bg-surface-raised text-text-primary border-border-strong',
+    success: 'bg-surface-raised text-text-primary border-border-strong',
+    warning: 'bg-surface-raised text-warning border-border',
+    error: 'bg-surface-raised text-negative border-border',
+    info: 'bg-surface-raised text-white border-border-strong',
+    neutral: 'bg-surface text-text-muted border-border',
+    outline: 'bg-transparent text-text-secondary border-border',
     accent: 'bg-white text-black border-transparent font-bold',
   }[variant];
 
   const dotColors = {
-    positive: 'bg-[#00D26A]',
-    warning: 'bg-[#FFAA00]',
-    error: 'bg-[#FF453A]',
+    positive: 'bg-white',
+    success: 'bg-white',
+    warning: 'bg-text-secondary',
+    error: 'bg-text-muted',
     info: 'bg-white',
-    neutral: 'bg-white/50',
+    neutral: 'bg-text-muted',
+    outline: 'bg-text-muted',
     accent: 'bg-black',
   }[variant];
 
@@ -51,7 +56,7 @@ export const Badge: React.FC<BadgeProps> = ({
           className={clsx(
             'w-1.5 h-1.5 rounded-full shrink-0',
             dotColors,
-            pulse && 'badge-pulse'
+            pulse && 'animate-pulse'
           )}
         />
       )}

@@ -99,6 +99,15 @@ $readerHeaders = @{
 $healthRes = Invoke-SafeApi -Uri "$BaseUrl/api/v1/health" -Method "GET"
 Assert-Test -Name "GET /api/v1/health returns status 'ok'" -Condition ($healthRes.StatusCode -eq 200 -and $healthRes.Json.status -eq "ok" -and $healthRes.Json.service -eq "ledgce-api") -Details $healthRes.Content
 
+$rootHealthRes = Invoke-SafeApi -Uri "$BaseUrl/health" -Method "GET"
+Assert-Test -Name "GET /health (root) returns status 'ok'" -Condition ($rootHealthRes.StatusCode -eq 200 -and $rootHealthRes.Json.status -eq "ok") -Details $rootHealthRes.Content
+
+$readyRes = Invoke-SafeApi -Uri "$BaseUrl/ready" -Method "GET"
+Assert-Test -Name "GET /ready (root) returns status 'ready' & db 'connected'" -Condition ($readyRes.StatusCode -eq 200 -and $readyRes.Json.status -eq "ready" -and $readyRes.Json.database -eq "connected") -Details $readyRes.Content
+
+$metricsRes = Invoke-SafeApi -Uri "$BaseUrl/metrics" -Method "GET"
+Assert-Test -Name "GET /metrics (root) returns Prometheus metrics text" -Condition ($metricsRes.StatusCode -eq 200 -and $metricsRes.Content -like "*# HELP*") -Details "Length: $($metricsRes.Content.Length)"
+
 $swaggerRes = Invoke-SafeApi -Uri "$BaseUrl/swagger-ui" -Method "GET"
 Assert-Test -Name "GET /swagger-ui returns HTTP 200" -Condition ($swaggerRes.StatusCode -eq 200 -or $swaggerRes.StatusCode -eq 301) -Details "Status: $($swaggerRes.StatusCode)"
 
@@ -154,6 +163,9 @@ Assert-Test -Name "POST /api/v1/accounts/opening-balance injects 10,000 USD via 
 
 $acctADetail = Invoke-SafeApi -Uri "$BaseUrl/api/v1/accounts/$acctAId" -Method "GET" -Headers $readerHeaders
 Assert-Test -Name "GET /api/v1/accounts/{id} verifies balance projection matches journal" -Condition ($acctADetail.StatusCode -eq 200 -and $acctADetail.Json.balance -eq "10000.00000000" -and $acctADetail.Json.projection_matches_journal -eq $true) -Details $acctADetail.Content
+
+$acctABalance = Invoke-SafeApi -Uri "$BaseUrl/api/v1/accounts/$acctAId/balance" -Method "GET" -Headers $readerHeaders
+Assert-Test -Name "GET /api/v1/accounts/{id}/balance returns dedicated balance view" -Condition ($acctABalance.StatusCode -eq 200 -and $acctABalance.Json.account_id -eq $acctAId -and $acctABalance.Json.balance -eq "10000.00000000") -Details $acctABalance.Content
 
 # 4. Atomic Transfer & Idempotency
 $txId = $null
@@ -213,6 +225,13 @@ Assert-Test -Name "POST /api/v1/transfers/reversal posts balanced compensating e
 $entriesRes = Invoke-SafeApi -Uri "$BaseUrl/api/v1/ledger/entries?limit=10" -Method "GET" -Headers $readerHeaders
 Assert-Test -Name "GET /api/v1/ledger/entries returns paginated entries" -Condition ($entriesRes.StatusCode -eq 200 -and $entriesRes.Json.items.Count -ge 2) -Details $entriesRes.Content
 
+$firstEntryId = $entriesRes.Json.items[0].id
+$singleEntryRes = Invoke-SafeApi -Uri "$BaseUrl/api/v1/ledger/entries/$firstEntryId" -Method "GET" -Headers $readerHeaders
+Assert-Test -Name "GET /api/v1/ledger/entries/{id} returns single entry" -Condition ($singleEntryRes.StatusCode -eq 200 -and $singleEntryRes.Json.id -eq $firstEntryId) -Details $singleEntryRes.Content
+
+$acctEntriesRes = Invoke-SafeApi -Uri "$BaseUrl/api/v1/ledger/accounts/$acctAId/entries" -Method "GET" -Headers $readerHeaders
+Assert-Test -Name "GET /api/v1/ledger/accounts/{id}/entries returns account specific entries" -Condition ($acctEntriesRes.StatusCode -eq 200 -and $acctEntriesRes.Json.items.Count -ge 1) -Details $acctEntriesRes.Content
+
 $reconBody = @{
     triggered_by = "test-automator"
 } | ConvertTo-Json
@@ -222,6 +241,13 @@ Assert-Test -Name "POST /api/v1/reconciliation/run executes audit: status 'passe
 
 $runsRes = Invoke-SafeApi -Uri "$BaseUrl/api/v1/reconciliation/runs" -Method "GET" -Headers $readerHeaders
 Assert-Test -Name "GET /api/v1/reconciliation/runs returns historical audits" -Condition ($runsRes.StatusCode -eq 200 -and ($runsRes.Json.Count -ge 1 -or $runsRes.Json.items.Count -ge 1)) -Details $runsRes.Content
+
+$eventsRes = Invoke-SafeApi -Uri "$BaseUrl/api/v1/events?limit=5" -Method "GET" -Headers $readerHeaders
+Assert-Test -Name "GET /api/v1/events returns events list" -Condition ($eventsRes.StatusCode -eq 200 -and $eventsRes.Json.items.Count -ge 1) -Details $eventsRes.Content
+
+$firstEventId = $eventsRes.Json.items[0].id
+$singleEventRes = Invoke-SafeApi -Uri "$BaseUrl/api/v1/events/$firstEventId" -Method "GET" -Headers $readerHeaders
+Assert-Test -Name "GET /api/v1/events/{id} returns single event" -Condition ($singleEventRes.StatusCode -eq 200 -and $singleEventRes.Json.id -eq $firstEventId) -Details $singleEventRes.Content
 
 $outboxRes = Invoke-SafeApi -Uri "$BaseUrl/api/v1/outbox/events?limit=5" -Method "GET" -Headers $readerHeaders
 Assert-Test -Name "GET /api/v1/outbox/events returns outbox queue events" -Condition ($outboxRes.StatusCode -eq 200 -and $outboxRes.Json.items.Count -ge 1) -Details $outboxRes.Content

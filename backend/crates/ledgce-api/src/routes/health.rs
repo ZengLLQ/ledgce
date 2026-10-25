@@ -16,6 +16,14 @@ pub struct HealthCheckResponse {
 }
 
 #[derive(Debug, Serialize, ToSchema)]
+pub struct ReadinessResponse {
+    pub status: String,
+    pub database: String,
+    pub pool_size: u32,
+    pub pool_idle: usize,
+}
+
+#[derive(Debug, Serialize, ToSchema)]
 pub struct ClearFaultsResponse {
     pub status: String,
 }
@@ -34,6 +42,32 @@ pub async fn live_health() -> Json<HealthCheckResponse> {
         service: "ledgce-api".into(),
         version: env!("CARGO_PKG_VERSION").into(),
     })
+}
+
+#[utoipa::path(
+    get,
+    path = "/api/v1/ready",
+    tag = "System",
+    responses(
+        (status = 200, description = "Service is ready to accept traffic", body = ReadinessResponse),
+        (status = 503, description = "Service is not ready (e.g. database down)")
+    )
+)]
+pub async fn ready_check(
+    State(state): State<AppState>,
+) -> Result<Json<ReadinessResponse>, ApiError> {
+    match sqlx::query("SELECT 1").execute(&state.pool).await {
+        Ok(_) => Ok(Json(ReadinessResponse {
+            status: "ready".into(),
+            database: "connected".into(),
+            pool_size: state.pool.size(),
+            pool_idle: state.pool.num_idle(),
+        })),
+        Err(e) => {
+            tracing::error!(error = %e, "Readiness check failed - database connection unavailable");
+            Err(ApiError(ledgce_application::AppError::Database(e)))
+        }
+    }
 }
 
 #[utoipa::path(
