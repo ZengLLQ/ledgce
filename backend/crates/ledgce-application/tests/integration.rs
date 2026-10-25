@@ -46,7 +46,7 @@ async fn setup_test_services() -> (
 
 #[tokio::test]
 async fn test_full_financial_core_and_reliability_lifecycle() {
-    let (account_svc, transfer_svc, query_svc, outbox_svc, recon_svc, system_svc) =
+    let (account_svc, transfer_svc, _query_svc, outbox_svc, recon_svc, system_svc) =
         setup_test_services().await;
 
     let test_run_id = Uuid::now_v7().simple().to_string()[..8].to_string();
