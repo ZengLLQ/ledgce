@@ -247,15 +247,15 @@ export const SystemHealthView: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2">
           {/* Arm Fault Form */}
-          <form onSubmit={handleArmFault} className="space-y-4 p-4 rounded-lg bg-[#171C2C]/50 border border-white/[0.06]">
+          <form onSubmit={handleArmFault} className="space-y-4 p-5 rounded-xl bg-[#161616] border border-white/10">
             <div>
-              <label className="block text-xs font-semibold text-[#9BA5BC] uppercase tracking-wider mb-1">
+              <label className="block text-[11px] font-mono font-bold text-white/60 uppercase tracking-wider mb-1.5">
                 Target Fault Point *
               </label>
               <select
                 value={faultPoint}
                 onChange={(e) => setFaultPoint(e.target.value)}
-                className="w-full h-10 px-3 rounded-md bg-[#171C2C] border border-white/10 text-xs text-[#F4F6FC] focus:border-[#526CFF] focus:outline-none font-mono"
+                className="w-full h-10 px-3.5 rounded bg-[#141414] border border-white/15 text-xs text-white focus:border-white focus:outline-none font-mono transition-all"
               >
                 <option value="post_transfer_before_commit">
                   post_transfer_before_commit (Simulate crash before journal commit)
@@ -273,13 +273,13 @@ export const SystemHealthView: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#9BA5BC] uppercase tracking-wider mb-1">
+              <label className="block text-[11px] font-mono font-bold text-white/60 uppercase tracking-wider mb-1.5">
                 Trigger Count (Remaining Executions) *
               </label>
               <select
                 value={faultCount}
                 onChange={(e) => setFaultCount(Number(e.target.value))}
-                className="w-full h-10 px-3 rounded-md bg-[#171C2C] border border-white/10 text-xs text-[#F4F6FC] focus:border-[#526CFF] focus:outline-none font-mono"
+                className="w-full h-10 px-3.5 rounded bg-[#141414] border border-white/15 text-xs text-white focus:border-white focus:outline-none font-mono transition-all"
               >
                 <option value={1}>1 execution (One-shot failure)</option>
                 <option value={3}>3 executions</option>
@@ -291,7 +291,7 @@ export const SystemHealthView: React.FC = () => {
               type="submit"
               variant="outline"
               loading={arming}
-              className="w-full border-[#F2B85C]/40 text-[#F2B85C] hover:bg-[#F2B85C]/10"
+              className="w-full border-amber-500/40 text-amber-400 hover:bg-amber-500 hover:text-black font-bold uppercase tracking-wider"
               icon={<Flame className="w-4 h-4" />}
             >
               Arm Chaos Fault Point

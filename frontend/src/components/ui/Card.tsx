@@ -14,20 +14,21 @@ export const Card: React.FC<CardProps> = ({
   children,
   ...props
 }) => {
+  // Starlink #121212 card aesthetic with 16px radius and crisp hairline border
   const variantStyles = {
-    primary: 'bg-[#111522] border-white/[0.08]',
-    secondary: 'bg-[#171C2C] border-white/[0.08]',
-    elevated: 'bg-[#20263A] border-white/[0.12] shadow-elevated',
-    glass: 'bg-[#111522]/80 backdrop-blur-md border-white/[0.1]',
+    primary: 'bg-[#121212] border-white/10 hover:border-white/20',
+    secondary: 'bg-[#161616] border-white/10 hover:border-white/20',
+    elevated: 'bg-[#1A1A1A] border-white/15 shadow-[0_8px_30px_rgba(0,0,0,0.8)]',
+    glass: 'bg-[#121212]/80 backdrop-blur-md border-white/10',
   }[variant];
 
   return (
     <div
       className={twMerge(
         clsx(
-          'border rounded-lg p-5 transition-all duration-200',
+          'border rounded-2xl p-6 sm:p-7 transition-all duration-300',
           variantStyles,
-          glow && 'box-glow border-[#526CFF]/30',
+          glow && 'border-white/40 shadow-[0_0_30px_rgba(255,255,255,0.1)]',
           className
         )
       )}
@@ -53,7 +54,7 @@ export const CardTitle: React.FC<React.HTMLAttributes<HTMLHeadingElement>> = ({
   children,
   ...props
 }) => (
-  <h3 className={twMerge(clsx('text-base font-semibold text-[#F4F6FC] tracking-tight', className))} {...props}>
+  <h3 className={twMerge(clsx('text-base font-bold text-[#FAFAFA] tracking-tight uppercase font-mono', className))} {...props}>
     {children}
   </h3>
 );
@@ -63,7 +64,7 @@ export const CardDescription: React.FC<React.HTMLAttributes<HTMLParagraphElement
   children,
   ...props
 }) => (
-  <p className={twMerge(clsx('text-xs text-[#9BA5BC] mt-0.5 leading-relaxed', className))} {...props}>
+  <p className={twMerge(clsx('text-xs text-white/50 leading-relaxed font-light', className))} {...props}>
     {children}
   </p>
 );
@@ -81,7 +82,7 @@ export const CardFooter: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
 }) => (
   <div
     className={twMerge(
-      clsx('mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-xs text-[#9BA5BC]', className)
+      clsx('flex items-center justify-between gap-3 pt-4 mt-4 border-t border-white/[0.08] text-xs text-white/50', className)
     )}
     {...props}
   >
@@ -89,14 +90,13 @@ export const CardFooter: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
   </div>
 );
 
-// High-density KPI Stat Tile inspired by Starlink micro-label pattern
 export interface MetricTileProps {
   label: string;
   value: React.ReactNode;
   unit?: string;
   change?: string;
-  changeType?: 'positive' | 'warning' | 'negative' | 'neutral';
-  meta?: React.ReactNode;
+  changeType?: 'positive' | 'negative' | 'neutral' | 'warning';
+  subtext?: string;
   icon?: React.ReactNode;
   className?: string;
 }
@@ -107,44 +107,50 @@ export const MetricTile: React.FC<MetricTileProps> = ({
   unit,
   change,
   changeType = 'neutral',
-  meta,
+  subtext,
   icon,
   className,
 }) => {
-  const changeColor = {
-    positive: 'text-[#35D6A0]',
-    warning: 'text-[#F2B85C]',
-    negative: 'text-[#FF6B78]',
-    neutral: 'text-[#9BA5BC]',
+  const changeStyles = {
+    positive: 'text-[#00D26A] bg-[#00D26A]/10 border-[#00D26A]/30',
+    negative: 'text-[#FF453A] bg-[#FF453A]/10 border-[#FF453A]/30',
+    warning: 'text-[#FFAA00] bg-[#FFAA00]/10 border-[#FFAA00]/30',
+    neutral: 'text-white/60 bg-white/5 border-white/10',
   }[changeType];
 
   return (
     <div
       className={twMerge(
         clsx(
-          'bg-[#111522] border border-white/[0.08] hover:border-white/[0.14] rounded-lg p-4 transition-colors relative overflow-hidden',
+          'p-6 rounded-2xl bg-[#121212] border border-white/10 flex flex-col justify-between hover:border-white/25 transition-all select-none',
           className
         )
       )}
     >
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-[11px] font-semibold text-[#9BA5BC]/90 uppercase tracking-wider">
-          {label}
-        </span>
-        {icon && <span className="text-[#9BA5BC] opacity-70">{icon}</span>}
+      <div className="flex items-center justify-between text-xs text-white/50 mb-3">
+        <span className="font-mono uppercase tracking-[0.2em] text-[10px] font-bold">{label}</span>
+        {icon && <span className="text-white/40">{icon}</span>}
       </div>
 
-      <div className="flex items-baseline gap-1.5 font-mono">
-        <span className="text-2xl font-bold tracking-tight text-[#F4F6FC] tabular-nums">
+      <div className="flex items-baseline gap-2 my-1">
+        <span className="text-3xl sm:text-4xl font-bold font-mono text-white tabular-nums tracking-tight">
           {value}
         </span>
-        {unit && <span className="text-xs text-[#9BA5BC] font-sans font-medium">{unit}</span>}
+        {unit && (
+          <span className="text-[11px] font-mono uppercase tracking-wider text-white/40">
+            {unit}
+          </span>
+        )}
       </div>
 
-      {(change || meta) && (
-        <div className="mt-2.5 flex items-center justify-between text-xs">
-          {change && <span className={clsx('font-medium', changeColor)}>{change}</span>}
-          {meta && <span className="text-[#9BA5BC]/80 truncate">{meta}</span>}
+      {(change || subtext) && (
+        <div className="mt-3 pt-3 border-t border-white/[0.06] flex items-center justify-between text-[11px] font-mono">
+          {change && (
+            <span className={`px-2 py-0.5 rounded-sm border uppercase text-[9px] font-bold tracking-wider ${changeStyles}`}>
+              {change}
+            </span>
+          )}
+          {subtext && <span className="text-white/40 truncate">{subtext}</span>}
         </div>
       )}
     </div>

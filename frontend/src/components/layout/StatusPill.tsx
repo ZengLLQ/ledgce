@@ -15,10 +15,10 @@ export const StatusPill: React.FC<StatusPillProps> = ({
   return (
     <div
       className={clsx(
-        'inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-medium border select-none transition-all duration-200',
+        'inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold tracking-[0.12em] uppercase border select-none transition-all duration-300',
         isBalanced
-          ? 'bg-[#35D6A0]/10 border-[#35D6A0]/25 text-[#35D6A0]'
-          : 'bg-[#FF6B78]/10 border-[#FF6B78]/25 text-[#FF6B78]',
+          ? 'bg-[#00D26A]/10 border-[#00D26A]/30 text-[#00D26A]'
+          : 'bg-[#FF453A]/10 border-[#FF453A]/30 text-[#FF453A]',
         className
       )}
     >
@@ -26,27 +26,27 @@ export const StatusPill: React.FC<StatusPillProps> = ({
         <span
           className={clsx(
             'animate-ping absolute inline-flex h-full w-full rounded-full opacity-75',
-            isBalanced ? 'bg-[#35D6A0]' : 'bg-[#FF6B78]'
+            isBalanced ? 'bg-[#00D26A]' : 'bg-[#FF453A]'
           )}
         />
         <span
           className={clsx(
             'relative inline-flex rounded-full h-2 w-2',
-            isBalanced ? 'bg-[#35D6A0]' : 'bg-[#FF6B78]'
+            isBalanced ? 'bg-[#00D26A]' : 'bg-[#FF453A]'
           )}
         />
       </span>
 
-      <span className="flex items-center gap-1 font-mono tracking-tight text-[11px] font-semibold">
+      <span className="flex items-center gap-1.5 text-[10px]">
         {isBalanced ? (
           <>
-            <ShieldCheck className="w-3.5 h-3.5" />
-            <span>INVARIANTS PRESERVED (Σ=0)</span>
+            <ShieldCheck className="w-3 h-3" />
+            <span>INVARIANTS VERIFIED · Σ=0</span>
           </>
         ) : (
           <>
-            <ShieldAlert className="w-3.5 h-3.5" />
-            <span>LEDGER DISCREPANCY DETECTED</span>
+            <ShieldAlert className="w-3 h-3" />
+            <span>LEDGER VARIANCE DETECTED</span>
           </>
         )}
       </span>

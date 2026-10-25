@@ -26,7 +26,7 @@ export const Tabs: React.FC<TabsProps> = ({
 }) => {
   if (variant === 'underline') {
     return (
-      <div className={twMerge(clsx('flex items-center gap-6 border-b border-white/[0.08]', className))}>
+      <div className={twMerge(clsx('flex items-center gap-6 border-b border-white/10 select-none', className))}>
         {tabs.map((tab) => {
           const isActive = tab.id === activeTab;
           return (
@@ -34,10 +34,10 @@ export const Tabs: React.FC<TabsProps> = ({
               key={tab.id}
               onClick={() => onChange(tab.id)}
               className={clsx(
-                'py-3 text-xs font-semibold uppercase tracking-wider flex items-center gap-2 border-b-2 -mb-px transition-colors',
+                'py-3 text-xs font-mono font-bold uppercase tracking-[0.14em] flex items-center gap-2 border-b-2 -mb-px transition-colors',
                 isActive
-                  ? 'border-[#526CFF] text-[#F4F6FC]'
-                  : 'border-transparent text-[#9BA5BC] hover:text-[#F4F6FC] hover:border-white/20'
+                  ? 'border-white text-white'
+                  : 'border-transparent text-white/50 hover:text-white hover:border-white/30'
               )}
             >
               {tab.icon && <span className="w-3.5 h-3.5">{tab.icon}</span>}
@@ -45,8 +45,8 @@ export const Tabs: React.FC<TabsProps> = ({
               {tab.count !== undefined && (
                 <span
                   className={clsx(
-                    'text-[10px] px-1.5 py-0.2 rounded-full tabular-nums',
-                    isActive ? 'bg-[#526CFF]/20 text-[#7588FF]' : 'bg-white/5 text-[#9BA5BC]'
+                    'text-[10px] px-1.5 py-0.5 rounded font-mono',
+                    isActive ? 'bg-white text-black font-bold' : 'bg-white/10 text-white/60'
                   )}
                 >
                   {tab.count}
@@ -59,11 +59,12 @@ export const Tabs: React.FC<TabsProps> = ({
     );
   }
 
+  // Starlink minimalist pill container
   return (
     <div
       className={twMerge(
-        clsx('inline-flex items-center p-1 rounded-md bg-[#171C2C] border border-white/[0.08]', className)
-      )}
+        clsx('inline-flex items-center p-1 rounded-md bg-[#141414] border border-white/10 select-none', className))
+      }
     >
       {tabs.map((tab) => {
         const isActive = tab.id === activeTab;
@@ -72,10 +73,10 @@ export const Tabs: React.FC<TabsProps> = ({
             key={tab.id}
             onClick={() => onChange(tab.id)}
             className={clsx(
-              'px-3 py-1.5 text-xs font-medium rounded-sm transition-all duration-150 flex items-center gap-2',
+              'px-3.5 py-1.5 text-xs font-mono font-bold uppercase tracking-[0.1em] rounded-sm transition-all duration-150 flex items-center gap-2',
               isActive
-                ? 'bg-[#20263A] text-[#F4F6FC] shadow-sm font-semibold'
-                : 'text-[#9BA5BC] hover:text-[#F4F6FC]'
+                ? 'bg-white text-black shadow-sm'
+                : 'text-white/60 hover:text-white'
             )}
           >
             {tab.icon && <span className="w-3.5 h-3.5">{tab.icon}</span>}
@@ -84,7 +85,7 @@ export const Tabs: React.FC<TabsProps> = ({
               <span
                 className={clsx(
                   'text-[10px] px-1.5 py-0.2 rounded font-mono',
-                  isActive ? 'bg-[#526CFF]/25 text-[#7588FF]' : 'bg-white/5 text-[#9BA5BC]'
+                  isActive ? 'bg-black/20 text-black' : 'bg-white/10 text-white/60'
                 )}
               >
                 {tab.count}

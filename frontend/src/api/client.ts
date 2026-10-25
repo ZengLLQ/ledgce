@@ -287,11 +287,24 @@ const mockReconciliationHistory: ReconciliationRunSummary[] = [
 
 let mockArmedFaults: FaultInjectionView[] = [];
 
+let currentToken = 'dev_admin_token';
+
+export function setApiToken(token: string) {
+  currentToken = token;
+}
+
+export function getApiToken() {
+  return currentToken;
+}
+
 // Helper request wrapper with automatic fallback if backend is offline
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const headers = new Headers(options.headers || {});
   if (!headers.has('Content-Type') && options.body) {
     headers.set('Content-Type', 'application/json');
+  }
+  if (!headers.has('Authorization')) {
+    headers.set('Authorization', `Bearer ${currentToken}`);
   }
 
   try {
@@ -916,4 +929,8 @@ export const api = {
     request<{ success: boolean }>('/system/faults/clear', {
       method: 'POST',
     }),
+
+  // Token management
+  setToken: (token: string) => setApiToken(token),
+  getToken: () => getApiToken(),
 };

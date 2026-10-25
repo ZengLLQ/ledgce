@@ -174,24 +174,24 @@ export const AccountsView: React.FC<AccountsViewProps> = ({ onInitiateTransferFr
           <select
             value={currencyFilter}
             onChange={(e) => setCurrencyFilter(e.target.value)}
-            className="h-9 px-3 text-xs rounded-md bg-[#171C2C] border border-white/10 text-[#F4F6FC] focus:outline-none focus:border-[#526CFF]"
+            className="h-10 px-3.5 text-xs rounded font-mono uppercase bg-[#141414] border border-white/15 text-white focus:outline-none focus:border-white transition-all"
           >
-            <option value="all">All Currencies</option>
+            <option value="all">ALL CURRENCIES</option>
             <option value="USD">USD</option>
             <option value="EUR">EUR</option>
-            <option value="GBP">GBP</option>
+            <option value="IDR">IDR</option>
           </select>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <form onSubmit={handleSearchSubmit} className="relative">
-            <Search className="w-3.5 h-3.5 text-[#9BA5BC] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Search className="w-3.5 h-3.5 text-white/40 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
-              placeholder="Search code or name..."
+              placeholder="SEARCH CODE / NAME..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="h-9 pl-9 pr-3 text-xs rounded-md bg-[#171C2C] border border-white/10 text-[#F4F6FC] placeholder:text-[#5D6882] focus:outline-none focus:border-[#526CFF] w-48 sm:w-64"
+              className="h-10 pl-9 pr-3 text-xs rounded bg-[#141414] border border-white/15 text-white placeholder:text-white/30 focus:outline-none focus:border-white transition-all w-48 sm:w-64 font-mono uppercase"
             />
           </form>
 
@@ -199,7 +199,7 @@ export const AccountsView: React.FC<AccountsViewProps> = ({ onInitiateTransferFr
             size="md"
             variant="outline"
             onClick={() => setIsOpeningBalanceOpen(true)}
-            icon={<Coins className="w-4 h-4 text-[#F2B85C]" />}
+            icon={<Coins className="w-4 h-4 text-[#FFAA00]" />}
           >
             Opening Balance
           </Button>

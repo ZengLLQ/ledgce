@@ -73,19 +73,19 @@ export const ReconciliationView: React.FC = () => {
   return (
     <div className="space-y-8">
       {/* Run Audit Action Banner */}
-      <div className="p-6 rounded-xl bg-gradient-to-r from-[#111522] via-[#171C2C] to-[#111522] border border-white/[0.08] flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="p-7 rounded-2xl bg-[#121212] border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-6 select-none">
         <div>
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-2.5 mb-2">
             <Badge variant="positive" dot size="sm">
               RIGOROUS AUDIT ENGINE
             </Badge>
-            <span className="text-xs font-mono text-[#9BA5BC]">INVARIANT ASSERTION</span>
+            <span className="text-xs font-mono text-white/50 tracking-wider">INVARIANT ASSERTION</span>
           </div>
-          <h2 className="text-xl font-bold text-[#F4F6FC]">
+          <h2 className="text-xl sm:text-2xl font-bold text-white uppercase tracking-tight font-mono">
             Full Ledger Invariant Verification
           </h2>
-          <p className="text-xs text-[#9BA5BC] max-w-xl mt-1 leading-relaxed">
-            Directly cross-checks the entire database: proves that double-entry currency sums are
+          <p className="text-xs text-white/50 max-w-xl mt-1.5 leading-relaxed font-light">
+            Directly cross-checks the entire database: mathematically proves that double-entry currency sums are
             zero, validates that cached account balance projections match journal aggregates, and checks
             customer non-negative bounds.
           </p>
@@ -97,7 +97,7 @@ export const ReconciliationView: React.FC = () => {
             variant="primary"
             onClick={handleRunReconciliation}
             loading={runningAudit}
-            icon={<Zap className="w-4 h-4 text-[#F2B85C]" />}
+            icon={<Zap className="w-4 h-4" />}
           >
             Execute Full Audit
           </Button>

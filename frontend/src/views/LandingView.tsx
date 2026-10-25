@@ -9,6 +9,11 @@ import {
   GitCommit,
   CheckCircle2,
   Sparkles,
+  Zap,
+  ChevronDown,
+  Terminal,
+  Activity,
+  Server,
 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
@@ -21,248 +26,278 @@ interface LandingViewProps {
 
 export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
   return (
-    <div className="space-y-16 py-4">
-      {/* Hero Section: SpaceX / Starlink cinematic authority */}
-      <section className="relative pt-6 pb-12 border-b border-white/[0.08]">
-        <div className="flex items-center gap-2 mb-6">
-          <Badge variant="accent" dot size="md">
-            FINANCIAL ENGINE SPECIFICATION
-          </Badge>
-          <span className="text-xs font-mono text-[#9BA5BC]">POSTGRESQL 16 · RUST</span>
+    <div className="w-full text-[#FAFAFA] select-none">
+      {/* 1. Full-Bleed 100vh Starlink Hero Section */}
+      <section className="relative min-h-[92vh] flex flex-col justify-between items-center text-center px-6 pt-16 pb-12 bg-starlink-hero overflow-hidden border-b border-white/[0.08]">
+        {/* Orbital horizon curvature line */}
+        <div className="horizon-arc" />
+
+        {/* Top Micro-badge */}
+        <div className="relative z-10 flex flex-col items-center gap-4">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-white/20 bg-white/5 backdrop-blur-md">
+            <span className="w-2 h-2 rounded-full bg-[#00D26A] badge-pulse" />
+            <span className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-white/80">
+              MISSION-CRITICAL FINANCIAL INFRASTRUCTURE
+            </span>
+          </div>
         </div>
 
-        <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-[#F4F6FC] leading-[1.08] max-w-4xl">
-          MATHEMATICAL CERTAINTY FOR MODERN LEDGERS.
-        </h1>
+        {/* Center Editorial Title & Subtitle */}
+        <div className="relative z-10 max-w-5xl mx-auto my-auto py-8">
+          <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white leading-[1.05] uppercase">
+            MATHEMATICAL CERTAINTY FOR GLOBAL FINANCE.
+          </h1>
 
-        <p className="mt-6 text-base sm:text-lg text-[#9BA5BC] max-w-2xl leading-relaxed">
-          Ledgce is an autonomous, mission-critical double-entry accounting engine built with
-          uncompromising architectural guarantees: immutable append-only journals, zero-sum
-          currency conservation, transactional outbox delivery, and continuous invariant verification.
+          <p className="mt-8 text-base sm:text-lg md:text-xl text-white/70 max-w-3xl mx-auto leading-relaxed font-light">
+            Ledgce is a high-assurance double-entry financial ledger platform engineered with
+            immutable append-only journals, zero-sum currency conservation, transactional outbox delivery,
+            and continuous automated reconciliation.
+          </p>
+
+          {/* Action CTAs */}
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+            <Button
+              size="lg"
+              variant="primary"
+              onClick={() => onNavigate('overview')}
+              icon={<ArrowRight className="w-4 h-4" />}
+            >
+              Launch Overview
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={() => onNavigate('transfers')}
+              icon={<Zap className="w-4 h-4" />}
+            >
+              Submit Transfer
+            </Button>
+            <Button
+              size="lg"
+              variant="secondary"
+              onClick={() => onNavigate('reconciliation')}
+              icon={<Shield className="w-4 h-4 text-[#00D26A]" />}
+            >
+              Run Invariant Audit
+            </Button>
+          </div>
+        </div>
+
+        {/* Bottom Telemetry Specs Bar */}
+        <div className="relative z-10 w-full max-w-6xl mx-auto pt-8 border-t border-white/[0.12] grid grid-cols-2 md:grid-cols-4 gap-6 text-left">
+          <div className="border-l border-white/10 pl-4">
+            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/50 block">
+              INVARIANT GUARANTEE
+            </span>
+            <div className="text-xl font-mono font-bold text-[#00D26A] mt-1 tabular-nums">
+              Σ(debit) - Σ(credit) = 0
+            </div>
+            <p className="text-[11px] text-white/50 mt-1">Multi-currency zero-sum theorem</p>
+          </div>
+
+          <div className="border-l border-white/10 pl-4">
+            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/50 block">
+              CONCURRENCY CONTROL
+            </span>
+            <div className="text-xl font-mono font-bold text-white mt-1">
+              Sorted Row Locks
+            </div>
+            <p className="text-[11px] text-white/50 mt-1">UUID sorting deadlock immunity</p>
+          </div>
+
+          <div className="border-l border-white/10 pl-4">
+            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/50 block">
+              DUAL-WRITE PREVENTION
+            </span>
+            <div className="text-xl font-mono font-bold text-white mt-1">
+              Transactional Outbox
+            </div>
+            <p className="text-[11px] text-white/50 mt-1">Lease-based worker dispatch</p>
+          </div>
+
+          <div className="border-l border-white/10 pl-4">
+            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/50 block">
+              IDEMPOTENCY LIFECYCLE
+            </span>
+            <div className="text-xl font-mono font-bold text-white mt-1">
+              SHA-256 Hashing
+            </div>
+            <p className="text-[11px] text-white/50 mt-1">Payload fingerprint validation</p>
+          </div>
+        </div>
+      </section>
+
+      {/* 2. Starlink 3-Tier Architectural Pillars */}
+      <section className="max-w-7xl mx-auto px-6 py-24 space-y-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/[0.08] pb-6">
+          <div>
+            <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-white/50 block mb-2">
+              CORE SYSTEM CAPABILITIES
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white uppercase">
+              Engineered For High Financial Stakes
+            </h2>
+          </div>
+          <p className="text-xs font-mono text-white/60 max-w-md">
+            Every architectural decision enforces zero financial drift under any hardware, network, or worker fault.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Card 1 */}
+          <Card className="hover:border-white/30 transition-all">
+            <div className="w-12 h-12 rounded bg-white/10 border border-white/15 flex items-center justify-center text-white mb-6">
+              <Database className="w-6 h-6" />
+            </div>
+            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/40 block mb-2">
+              STORAGE GUARANTEE
+            </span>
+            <h3 className="text-xl font-bold text-white uppercase tracking-tight">
+              1. Append-Only Immutable Journal
+            </h3>
+            <p className="text-xs text-white/60 mt-3 leading-relaxed">
+              Account balances are never overwritten directly. Every balance change originates as an
+              immutable double-entry pair with strictly ascending sequence numbers and cryptographic audit trails.
+            </p>
+            <div className="mt-6 pt-4 border-t border-white/[0.08] text-[11px] font-mono text-white/80">
+              TABLE journal_entries (IMMUTABLE)
+            </div>
+          </Card>
+
+          {/* Card 2 */}
+          <Card className="hover:border-white/30 transition-all">
+            <div className="w-12 h-12 rounded bg-white/10 border border-white/15 flex items-center justify-center text-white mb-6">
+              <Lock className="w-6 h-6" />
+            </div>
+            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/40 block mb-2">
+              HIGH-CONCURRENCY
+            </span>
+            <h3 className="text-xl font-bold text-white uppercase tracking-tight">
+              2. Deadlock-Free Atomicity
+            </h3>
+            <p className="text-xs text-white/60 mt-3 leading-relaxed">
+              Row locks on participating accounts are acquired in deterministic ascending UUID sort order
+              (<code className="font-mono text-white">ORDER BY id ASC FOR UPDATE</code>). Cross-transfers never
+              trigger PostgreSQL <code className="font-mono text-white">40P01</code> deadlocks.
+            </p>
+            <div className="mt-6 pt-4 border-t border-white/[0.08] text-[11px] font-mono text-[#00D26A]">
+              ZERO CONCURRENCY FAILURES
+            </div>
+          </Card>
+
+          {/* Card 3 */}
+          <Card className="hover:border-white/30 transition-all">
+            <div className="w-12 h-12 rounded bg-white/10 border border-white/15 flex items-center justify-center text-white mb-6">
+              <Shield className="w-6 h-6" />
+            </div>
+            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/40 block mb-2">
+              AUDIT ENGINE
+            </span>
+            <h3 className="text-xl font-bold text-white uppercase tracking-tight">
+              3. Continuous Reconciliation
+            </h3>
+            <p className="text-xs text-white/60 mt-3 leading-relaxed">
+              An autonomous auditing pipeline continuously recomputes the entire ledger from historical journal
+              legs. Any balance drift, negative balances on customer accounts, or broken invariance triggers immediate alerts.
+            </p>
+            <div className="mt-6 pt-4 border-t border-white/[0.08] text-[11px] font-mono text-white/80">
+              0 INVARIANT VIOLATIONS
+            </div>
+          </Card>
+        </div>
+      </section>
+
+      {/* 3. Starlink Hardware Specifications Table Layout */}
+      <section className="bg-[#0A0A0A] border-y border-white/[0.08] py-24">
+        <div className="max-w-7xl mx-auto px-6 space-y-12">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+              <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-white/50 block mb-2">
+                SYSTEM SPECIFICATIONS
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white uppercase">
+                Engineering Invariants
+              </h2>
+            </div>
+            <a
+              href="http://127.0.0.1:8080/swagger-ui"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs font-mono font-bold uppercase tracking-wider text-white hover:underline flex items-center gap-1.5"
+            >
+              <span>Explore OpenAPI 3.1 Spec</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </a>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 pt-6 border-t border-white/[0.08] text-xs">
+            <div className="flex items-center justify-between py-3 border-b border-white/[0.06]">
+              <span className="text-white/60 font-mono uppercase tracking-wider">Primary Language & Toolchain</span>
+              <span className="font-bold text-white font-mono">Rust 1.85+ (Axum, SQLx, Tokio)</span>
+            </div>
+
+            <div className="flex items-center justify-between py-3 border-b border-white/[0.06]">
+              <span className="text-white/60 font-mono uppercase tracking-wider">Authoritative Monetary Math</span>
+              <span className="font-bold text-white font-mono">rust_decimal::Decimal (0 floats)</span>
+            </div>
+
+            <div className="flex items-center justify-between py-3 border-b border-white/[0.06]">
+              <span className="text-white/60 font-mono uppercase tracking-wider">Database Storage Engine</span>
+              <span className="font-bold text-white font-mono">PostgreSQL 17 (NUMERIC 28, 8)</span>
+            </div>
+
+            <div className="flex items-center justify-between py-3 border-b border-white/[0.06]">
+              <span className="text-white/60 font-mono uppercase tracking-wider">Currency Conservation Law</span>
+              <span className="font-bold text-[#00D26A] font-mono">Strict Debit = Credit Per Currency</span>
+            </div>
+
+            <div className="flex items-center justify-between py-3 border-b border-white/[0.06]">
+              <span className="text-white/60 font-mono uppercase tracking-wider">Outbox Dispatch Algorithm</span>
+              <span className="font-bold text-white font-mono">FOR UPDATE SKIP LOCKED Leasing</span>
+            </div>
+
+            <div className="flex items-center justify-between py-3 border-b border-white/[0.06]">
+              <span className="text-white/60 font-mono uppercase tracking-wider">Idempotency Guarantee</span>
+              <span className="font-bold text-white font-mono">SHA-256 Payload Hash Fingerprint</span>
+            </div>
+
+            <div className="flex items-center justify-between py-3 border-b border-white/[0.06]">
+              <span className="text-white/60 font-mono uppercase tracking-wider">Reversal Pattern</span>
+              <span className="font-bold text-white font-mono">Balanced Compensating Legs (Append-Only)</span>
+            </div>
+
+            <div className="flex items-center justify-between py-3 border-b border-white/[0.06]">
+              <span className="text-white/60 font-mono uppercase tracking-wider">Stress Verification</span>
+              <span className="font-bold text-white font-mono">205+ ops/sec · 0 Deadlocks · 0 Drift</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. Interactive Call to Action */}
+      <section className="max-w-5xl mx-auto px-6 py-24 text-center space-y-8">
+        <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-white uppercase">
+          Ready To Inspect Live Financial Operations?
+        </h2>
+        <p className="text-sm sm:text-base text-white/60 max-w-2xl mx-auto font-light leading-relaxed">
+          Open the Ledger Overview to observe real-time balances, multi-currency volume distributions,
+          active outbox worker leases, and continuous reconciliation runs.
         </p>
-
-        <div className="mt-8 flex flex-wrap items-center gap-4">
+        <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
           <Button
             size="lg"
             variant="primary"
             onClick={() => onNavigate('overview')}
             icon={<ArrowRight className="w-4 h-4" />}
           >
-            Launch Overview
-          </Button>
-          <Button
-            size="lg"
-            variant="secondary"
-            onClick={() => onNavigate('transfers')}
-          >
-            Submit Transfer
+            Launch Overview Dashboard
           </Button>
           <Button
             size="lg"
             variant="outline"
-            onClick={() => onNavigate('reconciliation')}
-            icon={<Shield className="w-4 h-4 text-[#35D6A0]" />}
+            onClick={() => onNavigate('accounts')}
           >
-            Run Invariant Audit
-          </Button>
-        </div>
-
-        {/* Live architectural indicators */}
-        <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 pt-8 border-t border-white/[0.06]">
-          <div>
-            <span className="text-[10px] font-mono uppercase tracking-widest text-[#9BA5BC]">
-              INVARIANT GUARANTEE
-            </span>
-            <div className="text-xl font-bold font-mono text-[#35D6A0] mt-1 tabular-nums">
-              Σ(debit) - Σ(credit) = 0
-            </div>
-            <p className="text-[11px] text-[#9BA5BC]/80 mt-1">Multi-currency zero-sum theorem</p>
-          </div>
-
-          <div>
-            <span className="text-[10px] font-mono uppercase tracking-widest text-[#9BA5BC]">
-              CONCURRENCY CONTROL
-            </span>
-            <div className="text-xl font-bold font-mono text-[#F4F6FC] mt-1">
-              Deterministic Locks
-            </div>
-            <p className="text-[11px] text-[#9BA5BC]/80 mt-1">UUID sorting dead-lock immunity</p>
-          </div>
-
-          <div>
-            <span className="text-[10px] font-mono uppercase tracking-widest text-[#9BA5BC]">
-              DUAL-WRITE PREVENTION
-            </span>
-            <div className="text-xl font-bold font-mono text-[#526CFF] mt-1">
-              Transactional Outbox
-            </div>
-            <p className="text-[11px] text-[#9BA5BC]/80 mt-1">Atomic 2-phase ledger commits</p>
-          </div>
-
-          <div>
-            <span className="text-[10px] font-mono uppercase tracking-widest text-[#9BA5BC]">
-              IDEMPOTENCY LIFECYCLE
-            </span>
-            <div className="text-xl font-bold font-mono text-[#F2B85C] mt-1">
-              SHA-256 Hashing
-            </div>
-            <p className="text-[11px] text-[#9BA5BC]/80 mt-1">Payload fingerprint validation</p>
-          </div>
-        </div>
-      </section>
-
-      {/* 5 Invariant Pillars */}
-      <section className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight text-[#F4F6FC]">
-              Core Architectural Pillars
-            </h2>
-            <p className="text-xs text-[#9BA5BC] mt-1">
-              Every design decision enforces zero financial drift under any hardware, network, or process fault.
-            </p>
-          </div>
-          <Badge variant="neutral">Formal Verification</Badge>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <Card className="hover:border-[#526CFF]/40 transition-colors">
-            <div className="w-10 h-10 rounded-md bg-[#526CFF]/15 border border-[#526CFF]/30 flex items-center justify-center text-[#526CFF] mb-4">
-              <Database className="w-5 h-5" />
-            </div>
-            <h3 className="text-sm font-semibold text-[#F4F6FC]">
-              1. Append-Only Immutable Journal
-            </h3>
-            <p className="text-xs text-[#9BA5BC] mt-2 leading-relaxed">
-              No account balance is ever overwritten directly. Every balance change originates as an
-              immutable double-entry pair with strictly ascending sequence numbers and cryptographic
-              audit trails.
-            </p>
-            <div className="mt-4 pt-3 border-t border-white/[0.06] text-[11px] font-mono text-[#7588FF]">
-              TABLE journal_entries (IMMUTABLE)
-            </div>
-          </Card>
-
-          <Card className="hover:border-[#35D6A0]/40 transition-colors">
-            <div className="w-10 h-10 rounded-md bg-[#35D6A0]/15 border border-[#35D6A0]/30 flex items-center justify-center text-[#35D6A0] mb-4">
-              <Lock className="w-5 h-5" />
-            </div>
-            <h3 className="text-sm font-semibold text-[#F4F6FC]">
-              2. Atomic Balance Projections
-            </h3>
-            <p className="text-xs text-[#9BA5BC] mt-2 leading-relaxed">
-              Fast lookups utilize an inline projection table synchronized atomically inside the same
-              database transaction via triggers. The continuous reconciliation auditor proves projection ≡ journal.
-            </p>
-            <div className="mt-4 pt-3 border-t border-white/[0.06] text-[11px] font-mono text-[#35D6A0]">
-              TRIGGER accounts_create_balance
-            </div>
-          </Card>
-
-          <Card className="hover:border-[#F2B85C]/40 transition-colors">
-            <div className="w-10 h-10 rounded-md bg-[#F2B85C]/15 border border-[#F2B85C]/30 flex items-center justify-center text-[#F2B85C] mb-4">
-              <Cpu className="w-5 h-5" />
-            </div>
-            <h3 className="text-sm font-semibold text-[#F4F6FC]">
-              3. Guaranteed Outbox Delivery
-            </h3>
-            <p className="text-xs text-[#9BA5BC] mt-2 leading-relaxed">
-              Downstream subscribers receive events through a transactional outbox queue with lease
-              fencing, exponential retry backoff, and dead-letter safety. Zero dual-write inconsistencies.
-            </p>
-            <div className="mt-4 pt-3 border-t border-white/[0.06] text-[11px] font-mono text-[#F2B85C]">
-              SKIP LOCKED · Lease Duration 30s
-            </div>
-          </Card>
-        </div>
-      </section>
-
-      {/* System Flow Diagram / ASCII & Interactive Stepper */}
-      <section className="p-6 rounded-xl bg-[#111522] border border-white/[0.08] relative overflow-hidden">
-        <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/[0.08]">
-          <div className="flex items-center gap-3">
-            <Layers className="w-5 h-5 text-[#526CFF]" />
-            <div>
-              <h3 className="text-base font-semibold text-[#F4F6FC]">
-                Atomic Transfer Execution Pipeline
-              </h3>
-              <p className="text-xs text-[#9BA5BC]">
-                How Ledgce safely executes transfers across concurrency boundaries
-              </p>
-            </div>
-          </div>
-          <Badge variant="positive" dot>
-            Zero-Drift Certified
-          </Badge>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-          <div className="p-4 rounded-lg bg-[#171C2C] border border-white/[0.06]">
-            <div className="flex items-center justify-between text-xs font-mono text-[#9BA5BC] mb-2">
-              <span>STEP 01</span>
-              <Lock className="w-3.5 h-3.5 text-[#526CFF]" />
-            </div>
-            <h4 className="text-xs font-semibold text-[#F4F6FC]">Idempotency & Hash Fingerprint</h4>
-            <p className="text-[11px] text-[#9BA5BC] mt-1.5 leading-relaxed">
-              Compute SHA-256 hash of payload. Check idempotency table. If replayed with identical
-              hash, return previous outcome; if conflicting, abort with HTTP 409.
-            </p>
-          </div>
-
-          <div className="p-4 rounded-lg bg-[#171C2C] border border-white/[0.06]">
-            <div className="flex items-center justify-between text-xs font-mono text-[#9BA5BC] mb-2">
-              <span>STEP 02</span>
-              <GitCommit className="w-3.5 h-3.5 text-[#526CFF]" />
-            </div>
-            <h4 className="text-xs font-semibold text-[#F4F6FC]">Deterministic Row Locking</h4>
-            <p className="text-[11px] text-[#9BA5BC] mt-1.5 leading-relaxed">
-              Sort account UUIDs lexicographically and issue <code>SELECT FOR UPDATE</code>. Eliminate
-              deadlocks when two transfers execute concurrently between reverse accounts.
-            </p>
-          </div>
-
-          <div className="p-4 rounded-lg bg-[#171C2C] border border-white/[0.06]">
-            <div className="flex items-center justify-between text-xs font-mono text-[#9BA5BC] mb-2">
-              <span>STEP 03</span>
-              <CheckCircle2 className="w-3.5 h-3.5 text-[#35D6A0]" />
-            </div>
-            <h4 className="text-xs font-semibold text-[#F4F6FC]">Balanced Journal Insertion</h4>
-            <p className="text-[11px] text-[#9BA5BC] mt-1.5 leading-relaxed">
-              Write Debit and Credit entries. Verify balance sufficiency for customer accounts. Write
-              transaction summary and stage event in outbox in the same atomic block.
-            </p>
-          </div>
-
-          <div className="p-4 rounded-lg bg-[#171C2C] border border-white/[0.06]">
-            <div className="flex items-center justify-between text-xs font-mono text-[#9BA5BC] mb-2">
-              <span>STEP 04</span>
-              <Sparkles className="w-3.5 h-3.5 text-[#F2B85C]" />
-            </div>
-            <h4 className="text-xs font-semibold text-[#F4F6FC]">Outbox Worker Dispatch</h4>
-            <p className="text-[11px] text-[#9BA5BC] mt-1.5 leading-relaxed">
-              Worker claims batches using <code>FOR UPDATE SKIP LOCKED</code> with lease tokens. On
-              successful external publication, status transitions from pending to published.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Quick Launch CTA */}
-      <section className="p-8 rounded-xl bg-gradient-to-r from-[#111522] via-[#171C2C] to-[#111522] border border-[#526CFF]/20 flex flex-col sm:flex-row items-center justify-between gap-6">
-        <div>
-          <h3 className="text-lg font-bold text-[#F4F6FC]">
-            Ready to explore the active ledger system?
-          </h3>
-          <p className="text-xs text-[#9BA5BC] mt-1">
-            Inspect real accounts, monitor outbox workers, or trigger an on-demand reconciliation audit.
-          </p>
-        </div>
-        <div className="flex items-center gap-3 shrink-0">
-          <Button variant="secondary" onClick={() => onNavigate('accounts')}>
-            View Accounts
-          </Button>
-          <Button variant="primary" onClick={() => onNavigate('overview')}>
-            Open Overview
+            Manage Accounts & Vaults
           </Button>
         </div>
       </section>

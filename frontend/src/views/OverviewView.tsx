@@ -72,33 +72,33 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
   return (
     <div className="space-y-8">
       {/* Top invariant header banner */}
-      <div className="p-5 rounded-lg bg-gradient-to-r from-[#111522] via-[#171C2C] to-[#111522] border border-white/[0.08] flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-6 rounded-2xl bg-[#121212] border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4 select-none">
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-full bg-[#35D6A0]/10 border border-[#35D6A0]/30 flex items-center justify-center text-[#35D6A0] shrink-0">
-            <ShieldCheck className="w-5 h-5" />
+          <div className="w-12 h-12 rounded-xl bg-[#00D26A]/10 border border-[#00D26A]/30 flex items-center justify-center text-[#00D26A] shrink-0">
+            <ShieldCheck className="w-6 h-6" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold text-[#F4F6FC]">
-                Double-Entry Mathematical Invariants Intact
+            <div className="flex items-center gap-2.5">
+              <span className="text-base font-bold text-white uppercase tracking-tight font-mono">
+                Mathematical Ledger Invariants Verified
               </span>
               <Badge variant="positive" dot size="sm">
                 Σ = 0.00
               </Badge>
             </div>
-            <p className="text-xs text-[#9BA5BC] mt-0.5">
-              Journal entries across all currencies strictly balance. Zero account balance drift.
+            <p className="text-xs text-white/50 mt-1 font-light">
+              Debits equal credits across USD, EUR, and IDR. Zero account balance drift verified by database triggers.
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-3 shrink-0">
           <Button
             size="sm"
             variant="outline"
             onClick={handleRunReconciliation}
             loading={reconciling}
-            icon={<Zap className="w-3.5 h-3.5 text-[#F2B85C]" />}
+            icon={<Zap className="w-3.5 h-3.5" />}
           >
             Run Audit
           </Button>
@@ -180,36 +180,36 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
               stats.volumes.map((v: CurrencyVolume) => (
                 <div
                   key={v.currency}
-                  className="p-4 rounded-md bg-[#171C2C]/50 border border-white/[0.06] flex items-center justify-between"
+                  className="p-4 rounded-xl bg-[#161616] border border-white/[0.08] flex items-center justify-between"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded bg-[#526CFF]/15 border border-[#526CFF]/30 flex items-center justify-center font-mono font-bold text-xs text-[#7588FF]">
+                    <div className="w-8 h-8 rounded bg-white/10 border border-white/20 flex items-center justify-center font-mono font-bold text-xs text-white">
                       {v.currency}
                     </div>
                     <div>
-                      <div className="text-xs font-semibold text-[#F4F6FC]">
+                      <div className="text-xs font-semibold text-white">
                         {v.currency === 'USD' ? 'US Dollar Clearing' : v.currency === 'EUR' ? 'Euro Settlement Pool' : `${v.currency} Ledger`}
                       </div>
-                      <div className="text-[11px] text-[#9BA5BC]">
+                      <div className="text-[11px] text-white/50 font-mono">
                         {v.transaction_count} atomic transactions posted
                       </div>
                     </div>
                   </div>
 
                   <div className="text-right font-mono">
-                    <div className="text-base font-bold text-[#F4F6FC] tabular-nums">
+                    <div className="text-base font-bold text-white tabular-nums">
                       {parseFloat(v.total_posted_volume).toLocaleString('en-US', {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
                       })}{' '}
-                      <span className="text-xs font-sans text-[#9BA5BC]">{v.currency}</span>
+                      <span className="text-xs font-sans text-white/50">{v.currency}</span>
                     </div>
-                    <span className="text-[10px] text-[#35D6A0]">Balanced (Σ=0)</span>
+                    <span className="text-[10px] text-[#00D26A] font-bold">BALANCED (Σ=0)</span>
                   </div>
                 </div>
               ))
             ) : (
-              <div className="text-xs text-[#9BA5BC] py-6 text-center">
+              <div className="text-xs text-white/50 py-6 text-center font-mono">
                 No posted volume recorded yet.
               </div>
             )}
@@ -226,36 +226,36 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
           </CardHeader>
 
           <div className="space-y-4 text-xs">
-            <div className="p-3.5 rounded bg-[#171C2C] border border-white/[0.06] space-y-2">
+            <div className="p-4 rounded-xl bg-[#161616] border border-white/[0.08] space-y-2.5">
               <div className="flex items-center justify-between">
-                <span className="text-[#9BA5BC]">Last Audit Run:</span>
-                <span className="font-mono text-[#F4F6FC]">
+                <span className="text-white/50 font-mono">Last Audit Run:</span>
+                <span className="font-mono text-white">
                   {stats?.last_reconciliation
                     ? new Date(stats.last_reconciliation.finished_at).toLocaleTimeString()
                     : 'Just now'}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-[#9BA5BC]">Audit Duration:</span>
-                <span className="font-mono text-[#35D6A0]">
+                <span className="text-white/50 font-mono">Audit Duration:</span>
+                <span className="font-mono text-[#00D26A] font-bold">
                   {stats?.last_reconciliation?.duration_ms ?? 124} ms
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-[#9BA5BC]">Violations Detected:</span>
-                <span className="font-mono font-bold text-[#35D6A0]">
+                <span className="text-white/50 font-mono">Violations Detected:</span>
+                <span className="font-mono font-bold text-[#00D26A]">
                   {stats?.last_reconciliation?.violation_count ?? 0}
                 </span>
               </div>
             </div>
 
-            <div className="space-y-2 pt-2 border-t border-white/[0.06]">
-              <div className="flex items-center justify-between text-[11px]">
-                <span className="text-[#9BA5BC]">Zero-Sum Currency</span>
+            <div className="space-y-2 pt-2 border-t border-white/[0.08]">
+              <div className="flex items-center justify-between text-[11px] font-mono">
+                <span className="text-white/60">Zero-Sum Currency</span>
                 <Badge variant="positive" size="sm">PASS</Badge>
               </div>
-              <div className="flex items-center justify-between text-[11px]">
-                <span className="text-[#9BA5BC]">Projection Synchronization</span>
+              <div className="flex items-center justify-between text-[11px] font-mono">
+                <span className="text-white/60">Projection Synchronization</span>
                 <Badge variant="positive" size="sm">PASS</Badge>
               </div>
               <div className="flex items-center justify-between text-[11px]">

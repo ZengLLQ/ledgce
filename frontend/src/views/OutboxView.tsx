@@ -71,28 +71,28 @@ export const OutboxView: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Top Banner explaining Transactional Outbox guarantee */}
-      <div className="p-5 rounded-lg bg-gradient-to-r from-[#111522] via-[#171C2C] to-[#111522] border border-white/[0.08] flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-6 rounded-2xl bg-[#121212] border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4 select-none">
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-full bg-[#526CFF]/15 border border-[#526CFF]/30 flex items-center justify-center text-[#526CFF] shrink-0">
-            <SendHorizontal className="w-5 h-5" />
+          <div className="w-12 h-12 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white shrink-0">
+            <SendHorizontal className="w-6 h-6" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold text-[#F4F6FC]">
+            <div className="flex items-center gap-2.5">
+              <span className="text-base font-bold text-white uppercase tracking-tight font-mono">
                 Transactional Outbox Pattern Active
               </span>
-              <Badge variant="accent" size="sm">
+              <Badge variant="info" size="sm">
                 Dual-Write Mitigation
               </Badge>
             </div>
-            <p className="text-xs text-[#9BA5BC] mt-0.5">
+            <p className="text-xs text-white/50 mt-1 font-light">
               Every balance movement stages an event atomically into PostgreSQL before publication.
               Lease locks prevent split-brain delivery.
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-3 shrink-0">
           <Button
             size="sm"
             variant="outline"

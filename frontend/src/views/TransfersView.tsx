@@ -193,14 +193,14 @@ export const TransfersView: React.FC<TransfersViewProps> = ({
 
         <div className="flex items-center gap-2">
           <div className="relative">
-            <Search className="w-3.5 h-3.5 text-[#9BA5BC] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Search className="w-3.5 h-3.5 text-white/40 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
-              placeholder="Search reference or description..."
+              placeholder="SEARCH REFERENCE / MEMO..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && loadData()}
-              className="h-9 pl-9 pr-3 text-xs rounded-md bg-[#171C2C] border border-white/10 text-[#F4F6FC] placeholder:text-[#5D6882] focus:outline-none focus:border-[#526CFF] w-48 sm:w-64"
+              className="h-10 pl-9 pr-3 text-xs rounded bg-[#141414] border border-white/15 text-white placeholder:text-white/30 focus:outline-none focus:border-white transition-all w-48 sm:w-64 font-mono uppercase"
             />
           </div>
 
@@ -360,7 +360,7 @@ export const TransfersView: React.FC<TransfersViewProps> = ({
         <form onSubmit={handlePostTransfer} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-[#9BA5BC] uppercase tracking-wider mb-1">
+              <label className="block text-[11px] font-mono font-bold text-white/60 uppercase tracking-wider mb-1.5">
                 Source Account (Debit) *
               </label>
               <select
@@ -374,19 +374,19 @@ export const TransfersView: React.FC<TransfersViewProps> = ({
                     currency: acc ? acc.currency : transferForm.currency,
                   });
                 }}
-                className="w-full h-10 px-3 rounded-md bg-[#171C2C] border border-white/10 text-xs text-[#F4F6FC] font-mono focus:border-[#526CFF] focus:outline-none"
+                className="w-full h-10 px-3.5 rounded bg-[#141414] border border-white/15 text-xs text-white font-mono focus:border-white focus:outline-none transition-all"
               >
-                <option value="">Select source account...</option>
+                <option value="">SELECT SOURCE ACCOUNT...</option>
                 {accounts.map((a) => (
                   <option key={a.id} value={a.id}>
-                    {a.code} ({a.currency}) — Bal: {a.balance}
+                    {a.code} ({a.currency}) — BAL: {a.balance}
                   </option>
                 ))}
               </select>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#9BA5BC] uppercase tracking-wider mb-1">
+              <label className="block text-[11px] font-mono font-bold text-white/60 uppercase tracking-wider mb-1.5">
                 Destination Account (Credit) *
               </label>
               <select
@@ -395,14 +395,14 @@ export const TransfersView: React.FC<TransfersViewProps> = ({
                 onChange={(e) =>
                   setTransferForm({ ...transferForm, destination_account_id: e.target.value })
                 }
-                className="w-full h-10 px-3 rounded-md bg-[#171C2C] border border-white/10 text-xs text-[#F4F6FC] font-mono focus:border-[#526CFF] focus:outline-none"
+                className="w-full h-10 px-3.5 rounded bg-[#141414] border border-white/15 text-xs text-white font-mono focus:border-white focus:outline-none transition-all"
               >
-                <option value="">Select destination account...</option>
+                <option value="">SELECT DESTINATION ACCOUNT...</option>
                 {accounts
                   .filter((a) => a.id !== transferForm.source_account_id)
                   .map((a) => (
                     <option key={a.id} value={a.id}>
-                      {a.code} ({a.currency}) — Bal: {a.balance}
+                      {a.code} ({a.currency}) — BAL: {a.balance}
                     </option>
                   ))}
               </select>
@@ -411,7 +411,7 @@ export const TransfersView: React.FC<TransfersViewProps> = ({
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-[#9BA5BC] uppercase tracking-wider mb-1">
+              <label className="block text-[11px] font-mono font-bold text-white/60 uppercase tracking-wider mb-1.5">
                 Transfer Amount *
               </label>
               <input
@@ -422,26 +422,26 @@ export const TransfersView: React.FC<TransfersViewProps> = ({
                 placeholder="250.00"
                 value={transferForm.amount}
                 onChange={(e) => setTransferForm({ ...transferForm, amount: e.target.value })}
-                className="w-full h-10 px-3 rounded-md bg-[#171C2C] border border-white/10 text-xs text-[#F4F6FC] font-mono font-bold focus:border-[#526CFF] focus:outline-none"
+                className="w-full h-10 px-3.5 rounded bg-[#141414] border border-white/15 text-xs text-white font-mono font-bold focus:border-white focus:outline-none transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#9BA5BC] uppercase tracking-wider mb-1">
+              <label className="block text-[11px] font-mono font-bold text-white/60 uppercase tracking-wider mb-1.5">
                 Currency
               </label>
               <input
                 type="text"
                 readOnly
                 value={transferForm.currency}
-                className="w-full h-10 px-3 rounded-md bg-[#171C2C]/50 border border-white/10 text-xs text-[#9BA5BC] font-mono select-none"
+                className="w-full h-10 px-3.5 rounded bg-[#161616] border border-white/10 text-xs text-white/50 font-mono select-none"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-[#9BA5BC] uppercase tracking-wider mb-1">
+              <label className="block text-[11px] font-mono font-bold text-white/60 uppercase tracking-wider mb-1.5">
                 Custom Reference
               </label>
               <input
@@ -449,12 +449,12 @@ export const TransfersView: React.FC<TransfersViewProps> = ({
                 placeholder="e.g. TX-SETTLE-4091"
                 value={transferForm.reference || ''}
                 onChange={(e) => setTransferForm({ ...transferForm, reference: e.target.value })}
-                className="w-full h-10 px-3 rounded-md bg-[#171C2C] border border-white/10 text-xs text-[#F4F6FC] font-mono focus:border-[#526CFF] focus:outline-none"
+                className="w-full h-10 px-3.5 rounded bg-[#141414] border border-white/15 text-xs text-white font-mono focus:border-white focus:outline-none transition-all uppercase"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#9BA5BC] uppercase tracking-wider mb-1">
+              <label className="block text-[11px] font-mono font-bold text-white/60 uppercase tracking-wider mb-1.5">
                 Description / Memo
               </label>
               <input
@@ -464,20 +464,20 @@ export const TransfersView: React.FC<TransfersViewProps> = ({
                 onChange={(e) =>
                   setTransferForm({ ...transferForm, description: e.target.value })
                 }
-                className="w-full h-10 px-3 rounded-md bg-[#171C2C] border border-white/10 text-xs text-[#F4F6FC] focus:border-[#526CFF] focus:outline-none"
+                className="w-full h-10 px-3.5 rounded bg-[#141414] border border-white/15 text-xs text-white focus:border-white focus:outline-none transition-all"
               />
             </div>
           </div>
 
           <div>
-            <div className="flex items-center justify-between mb-1">
-              <label className="text-xs font-semibold text-[#9BA5BC] uppercase tracking-wider">
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="text-[11px] font-mono font-bold text-white/60 uppercase tracking-wider">
                 Idempotency Key (SHA-256 Validated) *
               </label>
               <button
                 type="button"
                 onClick={refreshIdempotencyKey}
-                className="text-[11px] text-[#526CFF] hover:underline"
+                className="text-[11px] font-mono text-white hover:underline uppercase"
               >
                 Regenerate Key
               </button>
@@ -489,27 +489,27 @@ export const TransfersView: React.FC<TransfersViewProps> = ({
               onChange={(e) =>
                 setTransferForm({ ...transferForm, idempotency_key: e.target.value })
               }
-              className="w-full h-10 px-3 rounded-md bg-[#171C2C] border border-white/10 text-xs text-[#F4F6FC] font-mono focus:border-[#526CFF] focus:outline-none"
+              className="w-full h-10 px-3.5 rounded bg-[#141414] border border-white/15 text-xs text-white font-mono focus:border-white focus:outline-none transition-all"
             />
           </div>
 
           {/* Mathematical Preview Box */}
-          <div className="p-3.5 rounded-lg bg-[#171C2C] border border-white/[0.08] space-y-2 text-xs">
+          <div className="p-4 rounded-xl bg-[#161616] border border-white/10 space-y-2 text-xs">
             <div className="flex items-center justify-between text-[11px] font-mono">
-              <span className="text-[#FF6B78]">Debit Leg:</span>
-              <span>
+              <span className="text-[#FF453A]">Debit Leg:</span>
+              <span className="font-bold">
                 -{transferForm.amount || '0.00'} {transferForm.currency}
               </span>
             </div>
             <div className="flex items-center justify-between text-[11px] font-mono">
-              <span className="text-[#35D6A0]">Credit Leg:</span>
-              <span>
+              <span className="text-[#00D26A]">Credit Leg:</span>
+              <span className="font-bold">
                 +{transferForm.amount || '0.00'} {transferForm.currency}
               </span>
             </div>
-            <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-[11px] font-mono font-bold">
-              <span className="text-[#9BA5BC]">Double-Entry Sum:</span>
-              <span className="text-[#35D6A0]">Σ = 0.00 (Balanced)</span>
+            <div className="pt-2 border-t border-white/[0.08] flex items-center justify-between text-[11px] font-mono font-bold">
+              <span className="text-white/50">Double-Entry Sum:</span>
+              <span className="text-[#00D26A]">Σ = 0.00 (BALANCED)</span>
             </div>
           </div>
 

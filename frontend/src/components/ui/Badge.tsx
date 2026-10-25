@@ -19,29 +19,29 @@ export const Badge: React.FC<BadgeProps> = ({
   ...props
 }) => {
   const baseStyles =
-    'inline-flex items-center font-medium rounded-xs border tracking-tight uppercase select-none';
+    'inline-flex items-center font-mono font-bold rounded-sm border uppercase select-none';
 
   const sizeStyles = {
-    sm: 'text-[10px] px-1.5 py-0.5 gap-1 tracking-wider',
-    md: 'text-xs px-2 py-0.5 gap-1.5',
+    sm: 'text-[9px] px-2 py-0.5 gap-1.5 tracking-[0.15em]',
+    md: 'text-[11px] px-2.5 py-0.5 gap-2 tracking-[0.12em]',
   }[size];
 
   const variantStyles = {
-    positive: 'bg-[#35D6A0]/10 text-[#35D6A0] border-[#35D6A0]/25',
-    warning: 'bg-[#F2B85C]/10 text-[#F2B85C] border-[#F2B85C]/25',
-    error: 'bg-[#FF6B78]/10 text-[#FF6B78] border-[#FF6B78]/25',
-    info: 'bg-[#526CFF]/10 text-[#7588FF] border-[#526CFF]/25',
-    neutral: 'bg-white/5 text-[#9BA5BC] border-white/10',
-    accent: 'bg-[#526CFF]/15 text-[#F4F6FC] border-[#526CFF]/40',
+    positive: 'bg-[#00D26A]/10 text-[#00D26A] border-[#00D26A]/30',
+    warning: 'bg-[#FFAA00]/10 text-[#FFAA00] border-[#FFAA00]/30',
+    error: 'bg-[#FF453A]/10 text-[#FF453A] border-[#FF453A]/30',
+    info: 'bg-white/10 text-white border-white/20',
+    neutral: 'bg-white/5 text-white/60 border-white/10',
+    accent: 'bg-white text-black border-transparent font-bold',
   }[variant];
 
   const dotColors = {
-    positive: 'bg-[#35D6A0]',
-    warning: 'bg-[#F2B85C]',
-    error: 'bg-[#FF6B78]',
-    info: 'bg-[#526CFF]',
-    neutral: 'bg-[#9BA5BC]',
-    accent: 'bg-[#7588FF]',
+    positive: 'bg-[#00D26A]',
+    warning: 'bg-[#FFAA00]',
+    error: 'bg-[#FF453A]',
+    info: 'bg-white',
+    neutral: 'bg-white/50',
+    accent: 'bg-black',
   }[variant];
 
   return (
